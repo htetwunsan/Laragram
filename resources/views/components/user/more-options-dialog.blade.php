@@ -1,4 +1,4 @@
-<x-app-dialog id="div_more_options_dialog">
+<x-app-dialog id="div_user_more_options_dialog">
     @if($user->is_blocked_by_auth_user)
         <button class="btn_unblock text-sm text-error text-center font-bold h-12 py-1 px-2 border-b border-triple219"
                 type="button"
@@ -33,7 +33,7 @@
     @push('scripts')
         <script>
             $(document).ready(function () {
-                $divMoreOptionsDialog = $('#div_more_options_dialog');
+                $divMoreOptionsDialog = $('#div_user_more_options_dialog');
                 $btnUnblock = $divMoreOptionsDialog.find('.btn_unblock');
                 $btnBlock = $divMoreOptionsDialog.find('.btn_block');
                 $btnRestrict = $divMoreOptionsDialog.find('.btn_restrict');

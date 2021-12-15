@@ -42,7 +42,7 @@
 
                 <div class="flex items-center justify-center w-12"
                      style="margin-left: 5px">
-                    <button id="btn_more_options" class="p-2" type="button">
+                    <button id="btn_user_more_options" class="p-2" type="button">
                         <svg aria-label="Options" class="_8-yf5 " color="#262626" fill="#262626"
                              height="32" role="img" viewBox="0 0 24 24" width="32">
                             <circle cx="12" cy="12" r="1.5"></circle>
@@ -70,10 +70,10 @@
                             user: @json($user)
                         };
                         $(document).ready(function () {
-                            const $btnMoreOptions = $('#btn_more_options');
+                            const $btnUserMoreOptions = $('#btn_user_more_options');
 
-                            $btnMoreOptions.click(function () {
-                                window.toggleDialog($('#div_more_options_dialog'), function ($dialog) {
+                            $btnUserMoreOptions.click(function () {
+                                window.toggleDialog($('#div_user_more_options_dialog'), function ($dialog) {
                                     $dialog.data('user', appData.user);
                                 });
                             });
