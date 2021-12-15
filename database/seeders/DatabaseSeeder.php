@@ -37,7 +37,7 @@ class DatabaseSeeder extends Seeder
         if (is_null($hws)) {
             $hws = User::factory(['email' => 'htetwunsan2000@gmail.com', 'name' => 'Htet Wun San'])->createOne();
         }
-        User::factory(100)
+        User::factory(20)
             ->addImage()
             ->timestampsBetween('-3 months')
             ->create();
@@ -45,7 +45,7 @@ class DatabaseSeeder extends Seeder
         $users = User::whereNotIn('id', [$hws->id])->get();
 
         // create posts for random users;
-        for ($_ = 0; $_ < 1000; ++$_) {
+        for ($_ = 0; $_ < 100; ++$_) {
             $user = $users->random();
             Post::factory()
                 ->timestampsBetween($user->created_at)
@@ -64,7 +64,7 @@ class DatabaseSeeder extends Seeder
         }
 
         // random users comment random posts
-        for ($_ = 0; $_ < 1000; ++$_) {
+        for ($_ = 0; $_ < 100; ++$_) {
             $post = $posts->random();
             $parent = Comment::factory()
                 ->for($post)
@@ -92,21 +92,21 @@ class DatabaseSeeder extends Seeder
         $comments = Comment::all();
 
         // random users likes random posts
-        for ($_ = 0; $_ < 1000; ++$_) {
+        for ($_ = 0; $_ < 100; ++$_) {
             $post = $posts->random();
             $like = $users->random()->likePost($post);
             $this->updateLikeTimestamps($like);
         }
 
         // random users likes random comments
-        for ($_ = 0; $_ < 1000; ++$_) {
+        for ($_ = 0; $_ < 100; ++$_) {
             $comment = $comments->random();
             $like = $users->random()->likeComment($comment);
             $this->updateLikeTimestamps($like);
         }
 
         // random users follow random users
-        for ($_ = 0; $_ < 1000; ++$_) {
+        for ($_ = 0; $_ < 100; ++$_) {
             $follower = $users->random();
             $following = $users->random();
             if ($follower->id !== $following->id) {
