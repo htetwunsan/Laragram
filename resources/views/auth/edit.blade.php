@@ -1,10 +1,10 @@
 <x-base-layout>
-    <section id="section_main" class="h-full flex flex-col items-stretch overflow-y-auto">
+    <section id="section_main" class="h-full flex flex-col items-stretch overflow-y-auto no-scrollbar">
         <!--header-->
         <x-app-top-navigation>
             <x-slot name="left">
                 <div class="flex flex-row w-8">
-                    <x-back-button>{{ route('user.show', ['user' => auth()->user()->username]) }}</x-back-button>
+                    <x-back-button></x-back-button>
                 </div>
             </x-slot>
 

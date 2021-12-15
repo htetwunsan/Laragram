@@ -2,14 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Middleware\EnsureUserIsNotBlockingAuthUser;
 use App\Models\Post;
 use App\Models\User;
-use DB;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware([EnsureUserIsNotBlockingAuthUser::class])->except(['explore', 'search']);
+    }
+
     public function explore(Request $request)
     {
         $users = auth()->user()->exploreUsers()
@@ -34,7 +39,9 @@ class UserController extends Controller
 
         $q = '%' . $request->q . '%';
 
-        $users = User::whereNotIn('id', [auth()->id()])
+        $notIn = collect(auth()->id())->merge(auth()->user()->blockersUserIds());
+
+        $users = User::whereNotIn('id', $notIn)
             ->where(function ($query) use ($q) {
                 $query->where('username', 'LIKE', $q)
                     ->orWhere('name', 'LIKE', $q)
@@ -72,7 +79,7 @@ class UserController extends Controller
             return view('auth.show', compact('user', 'posts', 'activeTab'));
         }
 
-        $user->addAuthRelatedAttributes(['is_blocking', 'is_following', 'is_followed', 'stories_have_viewed']);
+        $user->addAuthRelatedAttributes(['is_blocked', 'is_following', 'is_followed', 'stories_have_viewed']);
 
         return view('user.show', compact('user', 'posts', 'activeTab'));
     }
@@ -109,7 +116,7 @@ class UserController extends Controller
             return view('auth.show-feeds', compact('user', 'posts', 'activeTab'));
         }
 
-        $user->addAuthRelatedAttributes(['is_blocking', 'is_following', 'is_followed', 'stories_have_viewed']);
+        $user->addAuthRelatedAttributes(['is_blocked', 'is_following', 'is_followed', 'stories_have_viewed']);
 
         return view('user.show-feeds', compact('user', 'posts', 'activeTab'));
     }

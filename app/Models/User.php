@@ -189,6 +189,14 @@ class User extends Authenticatable
         return $this->blockings()->pluck('users.id');
     }
 
+    public function blockersUserIds()
+    {
+        if ($this->relationLoaded('blockings')) {
+            return $this->blockers->pluck('id');
+        }
+        return $this->blockers()->pluck('users.id');
+    }
+
     public function recommendedPosts()
     {
         $in = $this->followingsUserIds()->merge($this->id);

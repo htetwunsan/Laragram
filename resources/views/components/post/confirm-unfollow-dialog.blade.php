@@ -18,3 +18,43 @@
         Cancel
     </button>
 </x-app-dialog>
+@once
+    @push('scripts')
+        <script>
+            function showConfirmUnfollowDialog(user, unfollowCompleteCallback) {
+                window.toggleDialog($('#div_confirm_unfollow_dialog'), function ($dialog) {
+                    if (user.profile_image) {
+                        $dialog.find('.img_profile').attr('src', user.profile_image);
+                    }
+                    $dialog.find('.span_username').text(user.username);
+
+                    let requestInProgress = false;
+
+                    $dialog.find('.btn_unfollow').off('click').click(function () {
+                        if (requestInProgress) return;
+                        requestInProgress = true;
+
+                        axios.post(`/api/users/${user.id}/unfollow`)
+                            .then(response => {
+                                if (_.isFunction(unfollowCompleteCallback)) {
+                                    unfollowCompleteCallback(response);
+                                }
+                                window.toggleDialog($dialog);
+                            })
+                            .finally(function () {
+                                requestInProgress = false;
+                            })
+                    });
+                });
+            }
+            $(document).ready(function () {
+                const $dialog = $('#div_confirm_unfollow_dialog');
+                const $btnCancel = $dialog.find('.btn_cancel');
+
+                $btnCancel.click(function () {
+                    window.toggleDialog($dialog);
+                });
+            });
+        </script>
+    @endpush
+@endonce

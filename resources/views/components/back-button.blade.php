@@ -1,4 +1,4 @@
-<a class="flex flex-row" tabindex="0" href="{{ $slot }}">
+<button class="flex flex-row" tabindex="0" type="button" onclick="window.goBack();">
     <span class="block transform -rotate-90">
         <svg aria-label="Back"
              class="text-triple38 fill-current w-6 h-6"
@@ -10,4 +10,4 @@
             </path>
         </svg>
     </span>
-</a>
+</button>

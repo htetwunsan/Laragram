@@ -56,39 +56,9 @@
 
                         function handleUnfollow() {
                             const user = appData.followings[index];
-                            const $divConfirmUnfollowDialog = $('#div_confirm_unfollow_dialog');
-                            window.toggleDialog($divConfirmUnfollowDialog, function () {
-
-                                if (user.profile_image) {
-                                    $divConfirmUnfollowDialog.find('.img_profile').attr('src', '/storage/' + user.profile_image);
-                                }
-                                $divConfirmUnfollowDialog.find('.span_username').text(user.username);
-
-                                const $unfollow = $divConfirmUnfollowDialog.find('.btn_unfollow');
-                                const $cancel = $divConfirmUnfollowDialog.find('.btn_cancel');
-
-                                $unfollow.add($cancel).off('click');
-
-                                let requestInProgress = false;
-
-                                $unfollow.click(function () {
-                                    if (requestInProgress) return;
-                                    requestInProgress = true;
-
-                                    axios.post(`/api/users/${user.id}/unfollow`)
-                                        .then(response => {
-                                            $btnUnfollow.addClass('hidden');
-                                            $btnFollow.removeClass('hidden');
-                                            toggleDialog($divConfirmUnfollowDialog);
-                                        })
-                                        .finally(function () {
-                                            requestInProgress = false;
-                                        })
-                                });
-
-                                $cancel.click(function () {
-                                    window.toggleDialog($divConfirmUnfollowDialog);
-                                });
+                            showConfirmUnfollowDialog(user, function (response) {
+                                $btnUnfollow.addClass('hidden');
+                                $btnFollow.removeClass('hidden');
                             });
                         }
 

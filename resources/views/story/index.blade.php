@@ -1,5 +1,5 @@
 <x-base-layout>
-    <section id="section_main" class="bg-triple38 h-full flex flex-col items-stretch overflow-y-auto">
+    <section id="section_main" class="bg-triple38 h-full flex flex-col items-stretch overflow-y-auto no-scrollbar">
         <!--header-->
         <nav class="flex flex-col items-stretch order-first z-50">
             <header class="flex flex-col items-stretch px-2 pt-2"
@@ -257,11 +257,7 @@
                     });
 
                     $btnClose.click(function () {
-                        if (document.referrer) {
-                            window.location.href = document.referrer;
-                        } else {
-                            window.location.href = '{{ route('post.index') }}';
-                        }
+                        window.goBack();
                     });
 
                     $btnMoreOptions.click(function () {

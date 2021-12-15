@@ -53,7 +53,7 @@
                     $divUnfollowDialog.data('post', post);
                     $divUnfollowDialog.removeClass('hidden')
                     if (profileImage) {
-                        $divUnfollowDialog.find('.img_profile').attr('src', 'storage/' + profileImage);
+                        $divUnfollowDialog.find('.img_profile').attr('src', profileImage);
                     }
                     $divUnfollowDialog.find('.div_name').text(`Unfollow@${name}?`);
                 });

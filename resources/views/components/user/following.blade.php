@@ -44,21 +44,14 @@
 @once
     @push('scripts')
         <script>
+            var appData = {
+                user: @json($user)
+            };
             $(document).ready(function () {
                 const $btnUnfollow = $('#btn_unfollow');
 
                 $btnUnfollow.click(function () {
-                    const user = @json($user);
-                    const profileImage = user.profile_image;
-                    const username = user.username;
-
-                    window.toggleDialog($('#div_confirm_unfollow_dialog'), function ($dialog) {
-                        if (profileImage) {
-                            $dialog.find('.img_profile').attr('src', '/storage/' + profileImage);
-                        }
-                        $dialog.find('.span_username').text(username);
-                        $dialog.find('.form_unfollow_user').attr('action', `/users/${user.id}/unfollow`);
-                    });
+                    showConfirmUnfollowDialog(appData.user);
                 });
             });
         </script>

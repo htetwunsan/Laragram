@@ -38,6 +38,15 @@ window.toggleDialog = function ($dialog, showCallback, hideCallback) {
     }
 };
 
+if (sessionStorage.getItem('refresh') === 'true') {
+    sessionStorage.removeItem('refresh'); window.location.reload();
+}
+
+window.goBack = function () {
+    sessionStorage.setItem('refresh', 'true');
+    window.history.back();
+}
+
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting

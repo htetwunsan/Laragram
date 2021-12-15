@@ -1,5 +1,5 @@
 <x-base-layout>
-    <section id="section_main" class="h-full flex flex-col items-stretch overflow-y-auto">
+    <section id="section_main" class="h-full flex flex-col items-stretch overflow-y-auto no-scrollbar">
         <x-app-top-navigation>
             <x-slot name="left">
                 <div class="flex flex-row items-stretch justify-start w-8">
@@ -255,39 +255,9 @@
                         function handleUnfollow(event) {
                             event.stopPropagation();
                             const user = appUsers[index];
-                            const $divConfirmUnfollowDialog = $('#div_confirm_unfollow_dialog');
-                            window.toggleDialog($divConfirmUnfollowDialog, function () {
-
-                                if (user.profile_image) {
-                                    $divConfirmUnfollowDialog.find('.img_profile').attr('src', '/storage/' + user.profile_image);
-                                }
-                                $divConfirmUnfollowDialog.find('.span_username').text(user.username);
-
-                                const $unfollow = $divConfirmUnfollowDialog.find('.btn_unfollow');
-                                const $cancel = $divConfirmUnfollowDialog.find('.btn_cancel');
-
-                                $unfollow.add($cancel).off('click');
-
-                                let requestInProgress = false;
-
-                                $unfollow.click(function () {
-                                    if (requestInProgress) return;
-                                    requestInProgress = true;
-
-                                    axios.post(`/api/users/${user.id}/unfollow`)
-                                        .then(response => {
-                                            $btnUnfollow.addClass('hidden');
-                                            $btnFollow.removeClass('hidden');
-                                            window.toggleDialog($divConfirmUnfollowDialog);
-                                        })
-                                        .finally(function () {
-                                            requestInProgress = false;
-                                        })
-                                });
-
-                                $cancel.click(function () {
-                                    window.toggleDialog($divConfirmUnfollowDialog);
-                                });
+                            showConfirmUnfollowDialog(user, function (response) {
+                                $btnUnfollow.addClass('hidden');
+                                $btnFollow.removeClass('hidden');
                             });
                         }
 

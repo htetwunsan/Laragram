@@ -23,6 +23,17 @@
 @once
     @push('scripts')
         <script>
+
+            function showConfirmUnfollowDialog(user) {
+                window.toggleDialog($('#div_confirm_unfollow_dialog'), function ($dialog) {
+                    if (user.profileImage) {
+                        $dialog.find('.img_profile').attr('src', user.profileImage);
+                    }
+                    $dialog.find('.span_username').text(user.username);
+                    $dialog.find('.form_unfollow_user').attr('action', `/users/${user.id}/unfollow`);
+                });
+            }
+
             $(document).ready(function () {
                 const $divConfirmUnfollowDialog = $('#div_confirm_unfollow_dialog');
                 const $btnCancel = $divConfirmUnfollowDialog.find('.btn_cancel');

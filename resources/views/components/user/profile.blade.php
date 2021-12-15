@@ -55,7 +55,7 @@
         </div>
         <!--is following-->
         <div class="flex flex-col items-stretch" style="max-width: 250px;">
-            @if($user->is_block_by_auth_user)
+            @if($user->is_blocked_by_auth_user)
                 @component('components.user.blocking', ['user' => $user])@endcomponent
             @elseif($user->is_followed_by_auth_user)
                 @component('components.user.following', ['user' => $user])@endcomponent
@@ -66,12 +66,15 @@
             @once
                 @push('scripts')
                     <script>
+                        var appData = {
+                            user: @json($user)
+                        };
                         $(document).ready(function () {
                             const $btnMoreOptions = $('#btn_more_options');
 
                             $btnMoreOptions.click(function () {
                                 window.toggleDialog($('#div_more_options_dialog'), function ($dialog) {
-                                    $dialog.data('user', @json($user));
+                                    $dialog.data('user', appData.user);
                                 });
                             });
                         });

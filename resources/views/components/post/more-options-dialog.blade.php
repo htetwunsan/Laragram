@@ -83,12 +83,8 @@
                 const profileImage = post.user.profile_image;
                 const username = post.user.username;
 
-                window.toggleDialog($('#div_confirm_unfollow_dialog'), function ($dialog) {
-                    $dialog.data('post', post);
-                    if (profileImage) {
-                        $dialog.find('.img_profile').attr('src', '/storage/' + profileImage);
-                    }
-                    $dialog.find('.span_username').text(username);
+                showConfirmUnfollowDialog(post.user, function (response) {
+                    $(`.article_post[data-user_id=${post.user.id}] .btn_follow`).removeClass('hidden');
                 });
             });
 
@@ -118,26 +114,6 @@
 
             $btnCancel.click(function () {
                 toggleDialog($divConfirmDeleteDialog);
-            });
-        });
-
-        $(document).ready(function () {
-            // for confirm unfollow dialog
-            const $divConfirmUnfollowDialog = $('#div_confirm_unfollow_dialog');
-            const $btnUnfollow = $divConfirmUnfollowDialog.find('.btn_unfollow');
-            const $btnCancel = $divConfirmUnfollowDialog.find('.btn_cancel');
-
-            $btnCancel.click(function () {
-                window.toggleDialog($divConfirmUnfollowDialog)
-            });
-
-            $btnUnfollow.click(function () {
-                const post = $divConfirmUnfollowDialog.data('post');
-                axios.post(`/api/authors/${post.id}/unfollow`).then(response => {
-                    $(`.article_post[data-user_id=${post.user.id}] .btn_follow`).removeClass('hidden');
-                }).finally(function () {
-                    window.toggleDialog($divConfirmUnfollowDialog)
-                });
             });
         });
     </script>

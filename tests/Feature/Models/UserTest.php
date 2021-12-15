@@ -133,8 +133,8 @@ class UserTest extends TestCase
 
         $first = User::find(1);
 
-        self::assertTrue(!$first->followings->contains($first));
-        self::assertEquals(2, $first->followings->count());
+        self::assertTrue($first->followings->contains($first));
+        self::assertEquals(3, $first->followings->count());
     }
 
     public function test_followers_return_correct_relation()
@@ -165,8 +165,8 @@ class UserTest extends TestCase
 
         $first = User::find(1);
 
-        self::assertTrue(!$first->followers->contains($first));
-        self::assertEquals(2, $first->followers->count());
+        self::assertTrue($first->followers->contains($first));
+        self::assertEquals(3, $first->followers->count());
     }
 
     public function test_is_following_return_correct_result()

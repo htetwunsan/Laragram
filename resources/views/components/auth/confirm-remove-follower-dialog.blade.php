@@ -30,3 +30,44 @@
         </button>
     </div>
 </x-app-dialog>
+@once
+    @push('scripts')
+        <script>
+            function showConfirmRemoveFollowerDialog(user, completeCallback) {
+                window.toggleDialog($('#div_confirm_remove_follower_dialog'), function ($dialog) {
+                    if (user.profile_image) {
+                        $dialog.find('.img_profile').attr('src', user.profile_image);
+                    }
+                    $dialog.find('.span_username').text(user.username);
+
+                    let inProgress = false;
+
+                    $dialog.find('.btn_remove').off('click').click(function () {
+                        if (inProgress) return;
+                        inProgress = true;
+
+                        axios.post(`/api/users/${user.id}/remove-follower`)
+                            .then(response => {
+                                if (_.isFunction(completeCallback)) {
+                                    completeCallback(response);
+                                }
+                                window.toggleDialog($dialog);
+                            })
+                            .finally(() => {
+                                inProgress = false;
+                            });
+                    });
+                });
+            }
+
+            $(document).ready(function () {
+                const $dialog = $('#div_confirm_remove_follower_dialog');
+                const $btnCancel = $dialog.find('.btn_cancel');
+
+                $btnCancel.click(function () {
+                    window.toggleDialog($dialog);
+                });
+            });
+        </script>
+    @endpush
+@endonce

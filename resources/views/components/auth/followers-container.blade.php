@@ -44,37 +44,9 @@
 
                         function handleRemoveFollower() {
                             const user = appData.followers[index];
-                            window.toggleDialog($('#div_confirm_remove_follower_dialog'), function ($dialog) {
-
-                                if (user.profile_image) {
-                                    $dialog.find('.img_profile').attr('src', '/storage/' + user.profile_image);
-                                }
-
-                                $dialog.find('.span_username').text(user.username);
-
-                                const $remove = $dialog.find('.btn_remove');
-                                const $cancel = $dialog.find('.btn_cancel');
-
-                                let inProgress = false;
-
-                                $remove.off('click').click(function () {
-                                    if (inProgress) return;
-                                    inProgress = true;
-
-                                    axios.post(`/api/users/${user.id}/remove-follower`)
-                                        .then(response => {
-                                            $btnRemoveFollower.addClass('hidden');
-                                            $btnRemoveFollowerDone.removeClass('hidden');
-                                            window.toggleDialog($dialog);
-                                        })
-                                        .finally(response => {
-                                            inProgress = false;
-                                        });
-                                });
-
-                                $cancel.off('click').click(function () {
-                                    window.toggleDialog($dialog);
-                                });
+                            showConfirmRemoveFollowerDialog(user, function (response) {
+                                $btnRemoveFollower.addClass('hidden');
+                                $btnRemoveFollowerDone.removeClass('hidden');
                             });
                         }
 

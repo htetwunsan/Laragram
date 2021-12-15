@@ -1,5 +1,5 @@
 <x-base-layout>
-    <section id="section_main" class="h-full flex flex-col items-stretch overflow-y-auto">
+    <section id="section_main" class="h-full flex flex-col items-stretch overflow-y-auto no-scrollbar">
         <main class="flex flex-col flex-grow min-h-full">
             <nav class="flex justify-center items-center relative mx-4 mt-4 mb-1.5">
                 <div class="leading-none">
