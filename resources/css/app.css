@@ -1,0 +1,188 @@
+@import url('https://fonts.googleapis.com/css2?family=Cookie&display=swap');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+    @variants responsive {
+        /* Chrome, Safari and Opera */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+    }
+}
+
+:root {
+    --fb_blue: rgb(0, 149, 246);
+    --triple142: rgb(142, 142, 142);
+    --triple38: rgb(38, 38, 38);
+    --triple219: rgb(219, 219, 219);
+    --triple250: rgb(250, 250, 250);
+    --error: rgb(237, 73, 86);
+}
+
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+    -webkit-appearance: none;
+}
+
+
+.dialog-container {
+    @apply opacity-0 pointer-events-none transition-opacity duration-100 ease-in-out;
+}
+
+.dialog-container-active {
+    @apply opacity-100 pointer-events-auto;
+}
+
+.dialog {
+    @apply opacity-0 pointer-events-none transform scale-x-125 scale-y-150;
+}
+
+.dialog-active {
+    @apply opacity-100 pointer-events-auto transform scale-100 transition duration-100 ease-in-out;
+}
+
+.floating-label {
+    transform-origin: left;
+    transition: transform 100ms ease-out;
+}
+
+.floating-input {
+    padding: 9px 0 7px 8px;
+    background: var(--triple250);
+}
+
+.floating-input:not(:placeholder-shown) {
+    padding: 14px 0 2px 8px;
+}
+
+.floating-input:focus {
+    @apply ring-0;
+}
+
+.floating-input:not(:placeholder-shown) + .floating-label {
+    transform: scale(.83333) translateY(-10px);
+}
+
+.floating-label2 {
+    transform-origin: left;
+    transition: transform 100ms ease-out;
+}
+
+.floating-input2 {
+    padding: 4px 9px;
+}
+
+.floating-input2:not(:placeholder-shown) {
+    padding: 8px 8px 0 8px;
+}
+
+.floating-input2:focus {
+    @apply ring-0;
+}
+
+.floating-input2:not(:placeholder-shown) + .floating-label2 {
+    transform: scale(.83333) translateY(-12px);
+}
+
+/*
+    sprites icons
+ */
+.feed-icon {
+    @apply h-6 w-6;
+    background: url("../images/bundle-1.png") no-repeat -50px -497px / 569px 521px;
+}
+
+.feed-icon-active {
+    @apply h-6 w-6;
+    background: url("../images/bundle-1.png") no-repeat -25px -497px / 569px 521px;
+}
+
+.more_horiz {
+    @apply w-4 h-4;
+    background: url("../images/bundle-2.png") no-repeat -381px -329px / 440px 411px;
+}
+
+.arrow_back {
+    width: 11px;
+    height: 21px;
+    background: url("../images/bundle-2.png") no-repeat -428px -21px / 440px 411px;
+}
+
+.right-chevron {
+    width: 12px;
+    height: 15px;
+    background: url("../images/bundle-2.png") no-repeat -428px -61px / 440px 411px;
+}
+
+.saved-circle {
+    width: 62px;
+    height: 62px;
+    background: url("../images/bundle-2.png") no-repeat -126px -288px / 440px 411px;
+}
+
+.camera-circle {
+    width: 62px;
+    height: 62px;
+    background: url("../images/bundle-2.png") no-repeat -63px -288px / 440px 411px;
+}
+
+.next-chevron {
+    @apply h-6 w-6;
+    background: url('../images/bundle-2.png') no-repeat -402px -207px / 440px 411px;
+    transform: scaleX(-1);
+}
+
+.previous-chevron {
+    @apply h-6 w-6;
+    background: url('../images/bundle-2.png') no-repeat -402px -207px / 440px 411px;
+}
+
+.grey-next-chevron {
+    width: 30px;
+    height: 30px;
+    background: url('../images/bundle-2.png') no-repeat -160px -97px / 440px 411px;
+}
+
+.grey-previous-chevron {
+    width: 30px;
+    height: 30px;
+    transform: translateX(0);
+    background: url('../images/bundle-2.png') no-repeat -129px -97px / 440px 411px;
+}
+
+.lock-small {
+    width: 96px;
+    height: 96px;
+    background: url('../images/bundle-2.png') no-repeat -129px 0 / 440px 411px;
+}
+
+.camera {
+    @apply h-6 w-6;
+    background: url("../images/bundle-3.png") no-repeat -252px -426px / 569px 521px;
+}
+
+.search {
+    @apply h-2.5 w-2.5;
+    background: url("../images/bundle-3.png") no-repeat -505px -411px / 569px 521px;
+}
+
+.input-clear {
+    @apply h-5 w-5;
+    background: url("../images/bundle-3.png") no-repeat -545px -500px / 569px 521px;
+}
+
+.following {
+    @apply w-6 h-3;
+    background: url("../images/bundle-3.png") no-repeat -520px -475px / 569px 521px;
+}
