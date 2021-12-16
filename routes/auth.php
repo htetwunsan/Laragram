@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FacebookLoginController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Auth\ChangePasswordController;
@@ -28,6 +29,14 @@ Route::prefix('auth')->group(function () {
 
     Route::post('/login', [AuthenticatedSessionController::class, 'store'])
         ->middleware('guest');
+
+    Route::get('/facebook/login', [FacebookLoginController::class, 'login'])
+        ->middleware('guest')
+        ->name('facebook.login');
+
+    Route::get('/facebook/login/done', [FacebookLoginController::class, 'handleLoginDone'])
+        ->middleware('guest')
+        ->name('facebook.login.done');
 
     Route::get('/forgot-password', [PasswordResetLinkController::class, 'create'])
         ->middleware('guest')

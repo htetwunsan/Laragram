@@ -15,10 +15,10 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('email')->unique();
-            $table->string('username')->unique();
-            $table->string('name');
-            $table->date('birthday');
+            $table->string('email')->unique()->nullable();
+            $table->string('username')->unique()->nullable();
+            $table->string('name')->nullable();
+            $table->date('birthday')->nullable();
             $table->string('password');
             $table->string('profile_image', 2047)->nullable();
             $table->string('website', 2047)->nullable();
@@ -28,6 +28,9 @@ class CreateUsersTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
+            $table->string('facebook_id')->nullable();
+            $table->string('facebook_token', 2048)->nullable();
+            $table->string('facebook_refresh_token', 2048)->nullable();
             $table->index('created_at');
         });
     }

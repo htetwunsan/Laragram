@@ -18,15 +18,13 @@
                     <div class="flex flex-col items-stretch" style="width: 350px">
                         <form class="flex flex-col items-stretch mt-6" method="POST" action="{{ route('login') }}">@csrf
                             <div class="flex flex-col items-stretch my-2 mx-10">
-                                <button
-                                    id="btn_continue_with_facebook"
-                                    class="bg-fb_blue flex flex-row gap-x-1 items-center justify-center h-8 appearance-none py-1 px-2 border border-transparent border-solid rounded leading-5"
-                                    type="button"
-                                    onclick="showBottomToast('This feature is not available yet.')">
+                                <a class="bg-fb_blue flex flex-row gap-x-1 items-center justify-center h-8 appearance-none py-1 px-2 border border-transparent border-solid rounded leading-5"
+                                    tabindex="0"
+                                    href="{{ route('facebook.login') }}">
                                     <x-fb-icon/>
                                     <span
                                         class="block text-white text-sm font-bold leading-4 tracking-normal">Continue with Facebook</span>
-                                </button>
+                                </a>
                             </div>
                             <div class="flex flex-row items-center mt-3.5 mb-6 mx-10 h-4">
                                 <hr class="flex-grow"/>
@@ -44,8 +42,9 @@
                                             class="floating-input text-xs leading-18px w-full border-none placeholder-transparent"
                                             type="text"
                                             name="email"
+                                            value="{{ old('email') }}"
                                             placeholder="Username or email"
-                                            required autofocus/>
+                                            required/>
                                         <span
                                             class="floating-label h-9 leading-9 absolute left-2 text-xs text-triple142 select-none pointer-events-none">Username or email</span>
                                     </label>
@@ -107,8 +106,9 @@
                                     <p class="text-sm text-triple142 leading-18px">
                                         Don't have an account?
                                         <a href="{{ route('signup') }}">
-                                        <span class="text-sm text-fb_blue font-semibold leading-18px"
-                                        >Sign up</span>
+                                            <span class="text-sm text-fb_blue font-semibold leading-18px">
+                                                Sign up
+                                            </span>
                                         </a>
                                     </p>
                                 </div>
@@ -160,8 +160,6 @@
             </div>
         </footer>
     </section>
-
-    <x-app-bottom-toast/>
 
     <x-guest-menu/>
 

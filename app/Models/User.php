@@ -85,6 +85,12 @@ use Laravel\Sanctum\HasApiTokens;
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUsername($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereWebsite($value)
  * @mixin \Eloquent
+ * @property string|null $facebook_id
+ * @property string|null $facebook_token
+ * @property string|null $facebook_refresh_token
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereFacebookId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereFacebookRefreshToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereFacebookToken($value)
  */
 class User extends Authenticatable
 {
@@ -105,7 +111,10 @@ class User extends Authenticatable
         'website',
         'bio',
         'phone',
-        'gender'
+        'gender',
+        'facebook_id',
+        'facebook_token',
+        'facebook_refresh_token'
     ];
 
     /**
@@ -116,6 +125,9 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'facebook_id',
+        'facebook_token',
+        'facebook_refresh_token'
     ];
 
     /**
