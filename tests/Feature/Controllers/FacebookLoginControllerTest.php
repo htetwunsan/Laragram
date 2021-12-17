@@ -43,6 +43,8 @@ class FacebookLoginControllerTest extends TestCase
         self::assertEquals($facebookUser->email, $user->email);
         self::assertEquals($facebookUser->token, $user->facebook_token);
         self::assertEquals($facebookUser->refreshToken, $user->facebook_refresh_token);
+        self::assertNotEmpty($user->username);
+        dump($user->username);
     }
 
     public function test_process_user_return_correct_user()

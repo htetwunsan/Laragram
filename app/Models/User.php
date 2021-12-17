@@ -11,6 +11,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 use Laravel\Sanctum\HasApiTokens;
+use Str;
 
 
 /**
@@ -144,11 +145,25 @@ class User extends Authenticatable
         static::creating(function (User $user) {
             $username = explode('@', $user->email)[0];
 
-            if (User::whereUsername($username)->exists()) {
-                $username .= now()->microsecond;
-            }
+            if (! empty($username)) {
+                if (User::whereUsername($username)->exists()) {
+                    $username .= now()->microsecond;
+                }
 
-            $user->username = $username;
+                $user->username = $username;
+            } else if (! empty($user->name)) {
+                $username = $user->name;
+
+                if (User::whereUsername($username)->exists()) {
+                    $username .= now()->microsecond;
+                }
+
+                $user->username = $username;
+            } else {
+                $username = (string) Str::uuid();
+
+                $user->username = $username;
+            }
         });
 
         static::deleted(function (User $user) {
