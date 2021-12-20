@@ -123,7 +123,7 @@
                 >FACEBOOK</span>
             </div>
         </main>
-        <footer class="bg-triple250 flex flex-col items-stretch px-4">
+        <footer class="flex flex-none bg-triple250 flex flex-col items-stretch px-4">
             <div class="flex flex-col items-stretch mb-3">
                 <div class="flex flex-col items-stretch mt-6 justify-start">
                     <div class="flex flex-wrap items-stretch justify-center">

@@ -25,25 +25,13 @@ use Illuminate\Support\Facades\Route;
 require __DIR__ . '/auth.php';
 
 
-Route::get('/test', function (Request $request) {
-    return view('test');
-});
+if (env('app_debug')) {
+    Route::get('/test', function (Request $request) {
+        return view('test');
+    });
+}
 
 Route::middleware('auth')->group(function () {
-    Route::get('/users/new', function () {
-        $users = auth()->user()->suggestions()
-            ->with('postImages')
-            ->latest()
-            ->latest('id')
-            ->take(30)
-            ->get()
-            ->map(function (User $user) {
-                $user->setRelation('postImages', $user->postImages->take(3));
-                return $user;
-            });
-        return view('post.new-user-index', compact('users'));
-    });
-
     Route::get('/', [PostController::class, 'index'])
         ->name('post.index');
 
