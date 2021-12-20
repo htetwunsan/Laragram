@@ -1,5 +1,5 @@
 <section id="section_menu" class="h-full flex flex-col items-stretch hidden">
-    <header class="absolute top-0 w-full">
+    <header class="absolute top-0 left-0 right-0">
         <div class="h-11 flex items-center justify-between px-4">
             <button id="btn_close_menu">
                 <span class="block material-icons-outlined text-3xl text-triple38">close</span>
@@ -10,7 +10,7 @@
             <div class="w-6"></div>
         </div>
     </header>
-    <div class="absolute top-11 left-0 right-0 overflow-y-auto flex flex-col items-stretch h-full bg-triple250">
+    <div class="absolute top-11 left-0 right-0 bottom-0 flex flex-col items-stretch bg-triple250 overflow-y-auto">
         <div class="flex flex-col items-stretch">
             <div class="flex flex-col items-stretch border-b border-solid border-triple219">
                 <h3 class="text-sm text-triple142 font-semibold leading-18px uppercase mx-4 mt-5 mb-2">

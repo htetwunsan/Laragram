@@ -16,7 +16,7 @@
         </div>
     </header>
 
-    <div class="absolute top-11 left-0 right-0 overflow-y-auto flex flex-col items-stretch h-full bg-triple250">
+    <div class="absolute top-11 left-0 right-0 bottom-0 overflow-y-auto flex flex-col items-stretch bg-triple250">
         <div class="flex flex-col items-stretch">
             <div class="flex flex-col items-stretch border-b border-solid border-triple219">
                 <h3 class="text-sm text-triple142 font-semibold leading-18px uppercase mx-4 mt-5 mb-2">
