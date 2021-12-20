@@ -40,7 +40,7 @@
                 </button>
             </nav>
 
-            <div class="flex-grow flex flex-col items-stretch mx-10 mt-6">
+            <div class="flex-grow flex flex-col items-stretch mx-10 my-6">
                 <form id="form_signup" method="POST" action="{{ route('signup') }}">@csrf
                     <div class="flex flex-col items-stretch">
                         <div id="div_email" class="flex flex-col items-stretch mb-2 gap-y-2">
