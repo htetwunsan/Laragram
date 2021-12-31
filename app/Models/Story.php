@@ -71,7 +71,7 @@ class Story extends Model
 
     public function viewedByUsers()
     {
-        return $this->belongsToMany(User::class, View::Class, 'viewable_id', 'user_id')
+        return $this->belongsToMany(User::class, View::class, 'viewable_id', 'user_id')
             ->where('viewable_type', Story::class);
     }
 

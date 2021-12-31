@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Comment;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
@@ -19,7 +20,7 @@ class CommentController extends Controller
             ->latest('id')
             ->cursorPaginate(10);
 
-        auth()->user()->load('likedComments');
+        Auth::user()->load('likedComments');
 
         $comments->each(function (Comment $comment) {
             $comment->addAuthRelatedAttributes(['has_liked']);
@@ -41,7 +42,7 @@ class CommentController extends Controller
             'comment_id' => ['nullable', 'numeric']
         ]);
 
-        auth()->user()->commentPost($post, $request->body, Comment::find($request->comment_id));
+        Auth::user()->commentPost($post, $request->body, Comment::find($request->comment_id));
 
         return back()->with('success', 'Your comment was posted.');
     }

@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Auth;
 
 class StoryController extends Controller
 {
@@ -22,7 +23,7 @@ class StoryController extends Controller
             'image' => ['required', 'image']
         ]);
 
-        auth()->user()->createStory($request->file('image'));
+        Auth::user()->createStory($request->file('image'));
 
         return redirect()->route('post.index')->with('success', 'Your photo was added.');
     }

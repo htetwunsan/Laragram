@@ -5,12 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Comment;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LikeController extends Controller
 {
     public function postLike(Post $post)
     {
-        auth()->user()->likePost($post);
+        Auth::user()->likePost($post);
 
         return response()->json([
             'data' => [
@@ -22,7 +23,7 @@ class LikeController extends Controller
 
     public function postUnlike(Post $post)
     {
-        auth()->user()->unlikePost($post);
+        Auth::user()->unlikePost($post);
 
         return response()->json([
             'data' => [
@@ -34,7 +35,7 @@ class LikeController extends Controller
 
     public function commentLike(Comment $comment)
     {
-        auth()->user()->likeComment($comment);
+        Auth::user()->likeComment($comment);
 
         return response()->json([
             'data' => [
@@ -46,7 +47,7 @@ class LikeController extends Controller
 
     public function commentUnlike(Comment $comment)
     {
-        auth()->user()->unlikeComment($comment);
+        Auth::user()->unlikeComment($comment);
 
         return response()->json([
             'data' => [

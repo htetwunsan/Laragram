@@ -10,13 +10,14 @@ use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use InvalidArgumentException;
+use Illuminate\Support\Facades\Auth;
 
 class FollowingController extends Controller
 {
     public function userFollow(User $user)
     {
         try {
-            auth()->user()->follow($user);
+            Auth::user()->follow($user);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
         }
@@ -26,14 +27,14 @@ class FollowingController extends Controller
 
     public function userUnfollow(User $user)
     {
-        auth()->user()->unfollow($user);
+        Auth::user()->unfollow($user);
 
         return response()->json(['success' => 'You have unfollowed ' . $user->username . '.']);
     }
 
     public function removeFollower(User $user)
     {
-        auth()->user()->removeFollower($user);
+        Auth::user()->removeFollower($user);
 
         return response()->json(['success' => 'You have removed follower ' . $user->username . '.']);
     }
@@ -43,7 +44,7 @@ class FollowingController extends Controller
         $user = $post->user;
 
         try {
-            auth()->user()->follow($user);
+            Auth::user()->follow($user);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
         }
@@ -55,7 +56,7 @@ class FollowingController extends Controller
     {
         $user = $post->user;
 
-        auth()->user()->unfollow($user);
+        Auth::user()->unfollow($user);
 
         return response()->json(['success' => 'You have unfollowed ' . $user->username . '.']);
     }

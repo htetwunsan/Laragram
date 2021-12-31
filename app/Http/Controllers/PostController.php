@@ -9,14 +9,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 use Log;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
 
     public function index(Request $request)
     {
-        if (auth()->user()->followings()->count() < 2) {
-            $users = auth()->user()->exploreUsers()
+        if (Auth::user()->followings()->count() < 2) {
+            $users = Auth::user()->exploreUsers()
                 ->with('postImages')
                 ->latest()
                 ->latest('id')
@@ -29,7 +30,7 @@ class PostController extends Controller
             return view('post.new-user-index', compact('users'));
         }
 
-        $posts = auth()->user()->recommendedPosts()
+        $posts = Auth::user()->recommendedPosts()
             ->with(['user', 'images', 'likes', 'comments' => function ($query) {
                 $query->with('user');
                 $query->latest();
@@ -38,7 +39,7 @@ class PostController extends Controller
             ->latest('id')
             ->cursorPaginate(10);
 
-        auth()->user()->load(['followings', 'likedPosts', 'savedPosts']);
+        Auth::user()->load(['followings', 'likedPosts', 'savedPosts']);
 
         $posts->each(function (Post $post) {
             $post->user->addAuthRelatedAttributes(['is_followed']);
@@ -50,9 +51,9 @@ class PostController extends Controller
             return response()->json($posts);
         }
 
-        auth()->user()->load(['viewedStories', 'activeStories']);
+        Auth::user()->load(['viewedStories', 'activeStories']);
 
-        $users = auth()->user()->recommendedStories()
+        $users = Auth::user()->recommendedStories()
             ->take(20)
             ->get();
 
@@ -60,15 +61,15 @@ class PostController extends Controller
             $user->addAuthRelatedAttributes(['stories_have_viewed']);
         });
 
-        auth()->user()->addAuthRelatedAttributes(['stories_have_viewed']);
-        auth()->user()->loadCount('activeStories');
+        Auth::user()->addAuthRelatedAttributes(['stories_have_viewed']);
+        Auth::user()->loadCount('activeStories');
 
         return view('post.index', compact('posts', 'users'));
     }
 
     public function explore(Request $request)
     {
-        $posts = auth()->user()->explorePosts()
+        $posts = Auth::user()->explorePosts()
             ->latest()
             ->latest('id')
             ->cursorPaginate(20);
@@ -95,7 +96,7 @@ class PostController extends Controller
             'alternate_text' => ['nullable', 'max:255']
         ]);
 
-        auth()->user()->createPost(
+        Auth::user()->createPost(
             $request->caption,
             $request->file('post_image'),
             $request->alternate_text

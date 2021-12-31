@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use InvalidArgumentException;
+use Illuminate\Validation\ValidationException;
 
 /**
  * App\Models\Blocking
@@ -38,7 +38,7 @@ class Blocking extends Model
     {
         static::creating(function (Blocking $blocking) {
             if ($blocking->blocker_id === $blocking->blocking_id) {
-                throw new InvalidArgumentException('You cannot block yourself.');
+                throw ValidationException::withMessages(['You cannot block yourself.']);
             }
         });
 
@@ -48,7 +48,7 @@ class Blocking extends Model
 
         static::deleting(function (Blocking $blocking) {
             if ($blocking->blocker_id === $blocking->blocking_id) {
-                throw new InvalidArgumentException('You cannot unblock yourself.');
+                throw ValidationException::withMessages(['You cannot unblock yourself.']);
             }
         });
     }

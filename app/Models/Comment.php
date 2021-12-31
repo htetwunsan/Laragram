@@ -7,6 +7,7 @@ use App\Traits\FormattedTimestamps;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 
 /**
@@ -43,6 +44,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read Comment|null $parent
  * @property-read string $formatted_created_at
  * @property-read string $formatted_update_at
+ * @property-read string $formatted_updated_at
  */
 class Comment extends Model
 {
@@ -71,7 +73,7 @@ class Comment extends Model
         foreach ($attributes as $attribute) {
             switch ($attribute) {
                 case 'has_liked':
-                    $this->setAttribute($attribute . '_by_auth_user', auth()->user()->hasLikedComment($this));
+                    $this->setAttribute($attribute . '_by_auth_user', Auth::user()->hasLikedComment($this));
                     break;
                 default:
                     break;

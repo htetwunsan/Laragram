@@ -11,6 +11,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Auth;
 use Str;
 
 
@@ -92,6 +93,12 @@ use Str;
  * @method static \Illuminate\Database\Eloquent\Builder|User whereFacebookId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereFacebookRefreshToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereFacebookToken($value)
+ * @property-read Collection|\App\Models\Room[] $rooms
+ * @property-read int|null $rooms_count
+ * @property-read Collection|\App\Models\Participant[] $participants
+ * @property-read int|null $participants_count
+ * @property-read Collection|\App\Models\Room[] $deletedRooms
+ * @property-read int|null $deleted_rooms_count
  */
 class User extends Authenticatable
 {
@@ -145,13 +152,13 @@ class User extends Authenticatable
         static::creating(function (User $user) {
             $username = explode('@', $user->email)[0];
 
-            if (! empty($username)) {
+            if (!empty($username)) {
                 if (User::whereUsername($username)->exists()) {
                     $username .= now()->microsecond;
                 }
 
                 $user->username = $username;
-            } else if (! empty($user->name)) {
+            } else if (!empty($user->name)) {
                 $username = $user->name;
 
                 if (User::whereUsername($username)->exists()) {
@@ -173,18 +180,18 @@ class User extends Authenticatable
         });
     }
 
-//    public function getProfileImageForWebAttribute()
-//    {
-//        return str_replace('upload/', 'upload/w_320,h_320,c_fit/', $this->profile_image);
-//    }
+    //    public function getProfileImageForWebAttribute()
+    //    {
+    //        return str_replace('upload/', 'upload/w_320,h_320,c_fit/', $this->profile_image);
+    //    }
 
     public function addProfileImage($profileImage)
     {
-//        $image = Image::make($profileImage)->fit(320, 320)->encode('jpg', 80);
+        //        $image = Image::make($profileImage)->fit(320, 320)->encode('jpg', 80);
 
-//        $imagePath = 'profile_images/' . explode('.', $profileImage->hashName())[0] . '.jpg';
-//
-//        Storage::disk('public')->put($imagePath, $image, 'public');
+        //        $imagePath = 'profile_images/' . explode('.', $profileImage->hashName())[0] . '.jpg';
+        //
+        //        Storage::disk('public')->put($imagePath, $image, 'public');
 
         $imagePath = Cloudinary::upload($profileImage->getRealPath(), [
             'width' => 320,
@@ -258,19 +265,19 @@ class User extends Authenticatable
         foreach ($attributes as $attribute) {
             switch ($attribute) {
                 case 'is_blocked':
-                    $this->setAttribute($attribute . '_by_auth_user', auth()->user()->isBlocking($this));
+                    $this->setAttribute($attribute . '_by_auth_user', Auth::user()->isBlocking($this));
                     break;
                 case 'is_blocking':
-                    $this->setAttribute($attribute . '_auth_user', auth()->user()->isBlockedBy($this));
+                    $this->setAttribute($attribute . '_auth_user', Auth::user()->isBlockedBy($this));
                     break;
                 case 'is_followed':
-                    $this->setAttribute($attribute . '_by_auth_user', auth()->user()->isFollowing($this));
+                    $this->setAttribute($attribute . '_by_auth_user', Auth::user()->isFollowing($this));
                     break;
                 case 'is_following':
-                    $this->setAttribute($attribute . '_auth_user', auth()->user()->isFollowedBy($this));
+                    $this->setAttribute($attribute . '_auth_user', Auth::user()->isFollowedBy($this));
                     break;
                 case 'stories_have_viewed':
-                    $this->setAttribute($attribute . '_by_auth_user', auth()->user()->hasViewedStories($this->activeStories));
+                    $this->setAttribute($attribute . '_by_auth_user', Auth::user()->hasViewedStories($this->activeStories));
             }
         }
     }
@@ -284,7 +291,7 @@ class User extends Authenticatable
 
     public function followers()
     {
-        return $this->belongsToMany(User::class, Following::Class, 'following_id', 'follower_id');
+        return $this->belongsToMany(User::class, Following::class, 'following_id', 'follower_id');
     }
 
     public function isFollowing(User $user): bool
@@ -365,10 +372,10 @@ class User extends Authenticatable
     }
 
 
-//    public function toggleFollow(User $user): array
-//    {
-//        return $this->followings()->toggle($user);
-//    }
+    //    public function toggleFollow(User $user): array
+    //    {
+    //        return $this->followings()->toggle($user);
+    //    }
 
     /* followings end */
 
@@ -536,11 +543,11 @@ class User extends Authenticatable
 
     public function createStory($storyImage)
     {
-//        $image = Image::make($storyImage)->fit(1080, 1080)->encode('jpg', 80);
-//
-//        $imagePath = 'story/images/' . explode('.', $storyImage->hashName())[0] . '.jpg';
-//
-//        Storage::disk('public')->put($imagePath, $image, 'public');
+        //        $image = Image::make($storyImage)->fit(1080, 1080)->encode('jpg', 80);
+        //
+        //        $imagePath = 'story/images/' . explode('.', $storyImage->hashName())[0] . '.jpg';
+        //
+        //        Storage::disk('public')->put($imagePath, $image, 'public');
 
         $imagePath = Cloudinary::upload($storyImage->getRealPath(), [
             'width' => 1080,
@@ -611,7 +618,7 @@ class User extends Authenticatable
 
     public function blockers()
     {
-        return $this->belongsToMany(User::class, Blocking::Class, 'blocking_id', 'blocker_id')
+        return $this->belongsToMany(User::class, Blocking::class, 'blocking_id', 'blocker_id')
             ->whereNotIn('users.id', [$this->id]);
     }
 
@@ -665,4 +672,49 @@ class User extends Authenticatable
         return $b;
     }
     /* blocking end */
+
+    public function participants()
+    {
+        return $this->hasMany(Participant::class);
+    }
+
+    public function isParticipantOf(Room $room): bool
+    {
+        return $this->participants()->whereRoomId($room->id)->exists();
+    }
+
+    public function becomeParticipantOf(Room $room): Participant
+    {
+        return $this->participants()->whereRoomId($room->id)->first();
+    }
+
+    public function rooms()
+    {
+        return $this->belongsToMany(Room::class, Participant::class, 'user_id', 'room_id')
+            ->withPivot('room_deleted_at')
+            ->wherePivotNull('room_deleted_at')
+            ->withTimestamps();
+    }
+
+    public function deletedRooms()
+    {
+        return $this->belongsToMany(Room::class, Participant::class, 'user_id', 'room_id')
+            ->withPivot('room_deleted_at')
+            ->wherePivotNotNull('room_deleted_at')
+            ->withTimestamps();
+    }
+
+    // public function rooms(): BelongsToMany
+    // {
+    //     return $this->belongsToMany(Room::class, Participant::class, 'user_id', 'room_id')
+    //         ->withPivot('room_deleted_at')
+    //         ->wherePivotNull('room_deleted_at');
+    // }
+
+    // public function deletedRooms(): BelongsToMany
+    // {
+    //     return $this->belongsToMany(Room::class, Participant::class, 'user_id', 'room_id')
+    //         ->withPivot('room_deleted_at')
+    //         ->wherePivotNotNull('room_deleted_at');
+    // }
 }

@@ -6,13 +6,14 @@ use App\Http\Middleware\EnsureUserIsNotAuthUser;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BlockingController extends Controller
 {
     public function block(User $user, Request $request)
     {
         try {
-            auth()->user()->block($user);
+            Auth::user()->block($user);
         } catch (Exception $e) {
             if ($request->expectsJson()) {
                 return response()->json(['error' => $e->getMessage()], 400);
@@ -30,7 +31,7 @@ class BlockingController extends Controller
     public function unblock(User $user, Request $request)
     {
         try {
-            auth()->user()->unblock($user);
+            Auth::user()->unblock($user);
         } catch (Exception $e) {
             if ($request->expectsJson()) {
                 return response()->json(['error' => $e->getMessage()], 400);

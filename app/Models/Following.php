@@ -6,7 +6,7 @@ use App\Notifications\FollowNotification;
 use Eloquent;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use InvalidArgumentException;
+use Illuminate\Validation\ValidationException;
 
 /**
  * App\Models\Following
@@ -39,14 +39,14 @@ class Following extends Model
     {
         static::creating(function (Following $f) {
             if ($f->follower_id === $f->following_id) {
-                throw new InvalidArgumentException('You cannot follow yourself.');
+                throw ValidationException::withMessages(['You cannot follow yourself.']);
             }
 
             $follower = $f->follower;
             $following = $f->following;
 
             if ($follower->isBlocking($following) || $follower->isBlockedBy($following)) {
-                throw new ModelNotFoundException('Following user does not exist.');
+                throw ValidationException::withMessages(['Following user does not exist.']);
             }
         });
 
@@ -56,7 +56,7 @@ class Following extends Model
 
         self::deleting(function (Following $f) {
             if ($f->follower_id === $f->following_id) {
-                throw new InvalidArgumentException('You cannot unfollow yourself.');
+                throw ValidationException::withMessages(['You cannot unfollow yourself.']);
             }
         });
 

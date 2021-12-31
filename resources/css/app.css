@@ -108,6 +108,11 @@ input[type="search"]::-webkit-search-results-decoration {
     background: url("../images/bundle-1.png") no-repeat -25px -497px / 569px 521px;
 }
 
+.mute-icon {
+    @apply h-3 w-3;
+    background: url("../images/bundle-1.png") no-repeat -413px -291px / 569px 521px;
+}
+
 .more_horiz {
     @apply w-4 h-4;
     background: url("../images/bundle-2.png") no-repeat -381px -329px / 440px 411px;

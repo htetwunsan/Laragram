@@ -7,6 +7,7 @@ use App\Http\Controllers\FollowingController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\StoryController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ChatController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -107,6 +108,17 @@ Route::middleware('auth')->group(function () {
     Route::post('/users/{user}/unblock', [BlockingController::class, 'unblock'])
         ->name('user.unblock');
 
-    Route::get('auth/activity', [ActivityController::class, 'index'])
+    Route::get('/auth/activity', [ActivityController::class, 'index'])
         ->name('auth.activity');
+
+
+    Route::prefix('/direct')->group(function () {
+        //React root and will handle the rest routing by react
+        Route::get('/inbox', [ChatController::class, 'index'])
+            ->name('chat.index');
+
+        Route::fallback(function () {
+            return redirect()->route('chat.index');
+        });
+    });
 });

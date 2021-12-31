@@ -14,7 +14,7 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 
-Route::prefix('auth')->group(function () {
+Route::prefix('/auth')->group(function () {
 
     Route::get('/signup', [RegisteredUserController::class, 'create'])
         ->middleware('guest')
@@ -99,4 +99,3 @@ Route::prefix('auth')->group(function () {
         ->middleware('auth')
         ->name('auth.destroy.profile-image');
 });
-

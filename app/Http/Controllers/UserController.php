@@ -6,6 +6,7 @@ use App\Http\Middleware\EnsureUserIsNotBlockingAuthUser;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -17,7 +18,7 @@ class UserController extends Controller
 
     public function explore(Request $request)
     {
-        $users = auth()->user()->exploreUsers()
+        $users = Auth::user()->exploreUsers()
             ->latest()
             ->latest('id')
             ->cursorPaginate(20);
@@ -39,7 +40,7 @@ class UserController extends Controller
 
         $q = '%' . $request->q . '%';
 
-        $notIn = collect(auth()->id())->merge(auth()->user()->blockersUserIds());
+        $notIn = collect(Auth::id())->merge(Auth::user()->blockersUserIds());
 
         $users = User::whereNotIn('id', $notIn)
             ->where(function ($query) use ($q) {
@@ -75,7 +76,7 @@ class UserController extends Controller
         $user->setAttribute('followings_count', $user->followings()->count());
         $user->setAttribute('followers_count', $user->followers()->count());
 
-        if (auth()->id() === $user->id) {
+        if (Auth::id() === $user->id) {
             return view('auth.show', compact('user', 'posts', 'activeTab'));
         }
 
@@ -112,7 +113,7 @@ class UserController extends Controller
         $user->setAttribute('followings_count', $user->followings()->count());
         $user->setAttribute('followers_count', $user->followers()->count());
 
-        if (auth()->id() === $user->id) {
+        if (Auth::id() === $user->id) {
             return view('auth.show-feeds', compact('user', 'posts', 'activeTab'));
         }
 

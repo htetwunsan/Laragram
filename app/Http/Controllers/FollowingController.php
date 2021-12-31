@@ -9,13 +9,14 @@ use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use InvalidArgumentException;
+use Illuminate\Support\Facades\Auth;
 
 class FollowingController extends Controller
 {
     public function userFollow(User $user)
     {
         try {
-            auth()->user()->follow($user);
+            Auth::user()->follow($user);
         } catch (Exception $e) {
             return back()->with('error', $e->getMessage());
         }
@@ -25,7 +26,7 @@ class FollowingController extends Controller
 
     public function userUnfollow(User $user)
     {
-        auth()->user()->unfollow($user);
+        Auth::user()->unfollow($user);
 
         return back()->with('success', 'Unfollowed');
     }
@@ -35,7 +36,7 @@ class FollowingController extends Controller
         $user = $post->user;
 
         try {
-            auth()->user()->follow($user);
+            Auth::user()->follow($user);
         } catch (Exception $e) {
             return back()->with('error', $e->getMessage());
         }
@@ -47,7 +48,7 @@ class FollowingController extends Controller
     {
         $user = $post->user;
 
-        auth()->user()->unfollow($user);
+        Auth::user()->unfollow($user);
 
         return back()->with('success', 'Unfollowed');
     }
@@ -58,13 +59,13 @@ class FollowingController extends Controller
             ->latest('pivot_created_at')
             ->simplePaginate(15);
 
-        auth()->user()->load('followings');
+        Auth::user()->load('followings');
 
         $followers->each(function (User $follower) {
             $follower->addAuthRelatedAttributes(['is_followed']);
         });
 
-        if ($user->id === auth()->id()) {
+        if ($user->id === Auth::id()) {
             if ($request->expectsJson()) {
                 $followers = collect([
                     'html' => view('components.auth.followers', ['followers' => $followers])->render()
@@ -90,14 +91,14 @@ class FollowingController extends Controller
         $followings = $user->followings()->withTimestamps()
             ->latest('pivot_created_at')
             ->simplePaginate(15);
-        
-        auth()->user()->load('followings');
+
+        Auth::user()->load('followings');
 
         $followings->each(function (User $following) {
             $following->addAuthRelatedAttributes(['is_followed']);
         });
 
-        if ($user->id === auth()->id()) {
+        if ($user->id === Auth::id()) {
             if ($request->expectsJson()) {
                 $followings = collect([
                     'html' => view('components.auth.followings', ['followings' => $followings])->render()
@@ -117,5 +118,4 @@ class FollowingController extends Controller
 
         return view('user.followings-index', compact('followings', 'user'));
     }
-
 }

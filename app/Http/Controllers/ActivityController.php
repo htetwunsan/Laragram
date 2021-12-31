@@ -10,12 +10,13 @@ use App\Notifications\FollowNotification;
 use App\Notifications\LikeNotification;
 use Carbon\CarbonInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ActivityController extends Controller
 {
     public function index(Request $request)
     {
-        $notifications = auth()->user()->notifications()->simplePaginate(10);
+        $notifications = Auth::user()->notifications()->simplePaginate(10);
 
         $notifications->each(function ($notification) {
             switch ($notification->type) {
@@ -26,7 +27,7 @@ class ActivityController extends Controller
                     );
                     $notification->setAttribute(
                         'is_following',
-                        auth()->user()->isFollowing($notification->following->follower)
+                        Auth::user()->isFollowing($notification->following->follower)
                     );
                     break;
                 case LikeNotification::class:

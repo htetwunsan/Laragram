@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Auth;
 
 class AuthenticatedUserController extends Controller
 {
@@ -18,7 +19,7 @@ class AuthenticatedUserController extends Controller
 
     public function update(Request $request)
     {
-        $user = auth()->user();
+        $user = Auth::user();
 
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -41,14 +42,14 @@ class AuthenticatedUserController extends Controller
             'profile_image' => ['required', 'image'],
         ]);
 
-        auth()->user()->addProfileImage($request->file('profile_image'));
+        Auth::user()->addProfileImage($request->file('profile_image'));
 
         return back();
     }
 
     public function destroyProfileImage()
     {
-        auth()->user()->removeProfileImage();
+        Auth::user()->removeProfileImage();
 
         return back();
     }

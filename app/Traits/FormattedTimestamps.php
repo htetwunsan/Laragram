@@ -11,7 +11,7 @@ trait FormattedTimestamps
         return $this->created_at->diffForHumans(null, CarbonInterface::DIFF_ABSOLUTE, true);
     }
 
-    public function getFormattedUpdateAtAttribute(): string
+    public function getFormattedUpdatedAtAttribute(): string
     {
         return $this->updated_at->diffForHumans(null, CarbonInterface::DIFF_ABSOLUTE, true);
     }

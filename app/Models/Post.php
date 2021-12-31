@@ -6,10 +6,7 @@ use App\Traits\FormattedTimestamps;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Facades\Image;
-use function PHPUnit\Framework\isInstanceOf;
+use Illuminate\Support\Facades\Auth;
 
 
 /**
@@ -42,6 +39,7 @@ use function PHPUnit\Framework\isInstanceOf;
  * @property-read string $formatted_created_at
  * @property-read string $formatted_update_at
  * @property-read \App\Models\PostImage|null $image
+ * @property-read string $formatted_updated_at
  */
 class Post extends Model
 {
@@ -54,10 +52,10 @@ class Post extends Model
         foreach ($attributes as $attribute) {
             switch ($attribute) {
                 case 'has_liked':
-                    $this->setAttribute($attribute . '_by_auth_user', auth()->user()->hasLikedPost($this));
+                    $this->setAttribute($attribute . '_by_auth_user', Auth::user()->hasLikedPost($this));
                     break;
                 case 'has_saved':
-                    $this->setAttribute($attribute . '_by_auth_user', auth()->user()->hasSavedPost($this));
+                    $this->setAttribute($attribute . '_by_auth_user', Auth::user()->hasSavedPost($this));
                     break;
                 default:
                     break;
@@ -82,11 +80,11 @@ class Post extends Model
 
     public function createImage($postImage, $alternateText)
     {
-//        $image = Image::make($postImage)->fit(1080, 1080)->encode('jpg', 80);
-//
-//        $imagePath = 'post/images/' . explode('.', $postImage->hashName())[0] . '.jpg';
-//
-//        Storage::disk('public')->put($imagePath, $image, 'public');
+        //        $image = Image::make($postImage)->fit(1080, 1080)->encode('jpg', 80);
+        //
+        //        $imagePath = 'post/images/' . explode('.', $postImage->hashName())[0] . '.jpg';
+        //
+        //        Storage::disk('public')->put($imagePath, $image, 'public');
 
         $imagePath = Cloudinary::upload($postImage->getRealPath(), [
             'width' => 1080,
