@@ -95,6 +95,8 @@ class Chat extends Component {
     }
 
     componentDidMount() {
+        this.Repo.getRoom();
+        this.Repo.markMessagesAsSeen();
         this.channel = Echo.join(`rooms.${this.roomId}`)
             .here(users => console.log(users))
             .joining(user => console.log(user))
@@ -132,8 +134,6 @@ class Chat extends Component {
                     }));
                 }
             });
-        this.Repo.getRoom();
-        this.Repo.markMessagesAsSeen();
     }
 
     componentWillUnmount() {
