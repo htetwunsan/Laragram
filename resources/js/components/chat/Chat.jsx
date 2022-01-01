@@ -98,19 +98,15 @@ class Chat extends Component {
         this.Repo.getRoom();
         this.Repo.markMessagesAsSeen();
         this.channel = Echo.join(`rooms.${this.roomId}`)
-            .here(users => console.log(users))
-            .joining(user => console.log(user))
-            .leaving(user => console.log(user))
-            .error(error => console.log(error))
+            .here(users => { })
+            .joining(user => { })
+            .leaving(user => { })
+            .error(error => { })
             .listen('MessageSent', e => {
-                console.log('MessageSent');
-                console.log(e.message);
                 this.setStateMessage(e.message);
                 this.Repo.markMessageAsSeen(e.message);
             })
             .listen('MessageSeen', e => {
-                console.log('MessageSeen');
-                console.log(e.message);
                 this.setState(({ messages }) => ({
                     messages: messages.map(message => {
                         if (message.id == e.message.id) {
@@ -121,7 +117,6 @@ class Chat extends Component {
                 }));
             })
             .listenForWhisper('Typing', e => {
-                console.log('Typing');
                 if (e.isTyping) {
                     if (!this.state.typingUsers.some(user => user.id == e.user.id)) {
                         this.setState(({ typingUsers }) => ({
@@ -199,7 +194,6 @@ class Chat extends Component {
 
     render() {
         const { room, content, messages, typingUsers } = this.state;
-        console.log(messages);
         return (
             <section id="section_main" className="flex-grow flex flex-col items-stretch overflow-hidden">
                 <TopNavigation
