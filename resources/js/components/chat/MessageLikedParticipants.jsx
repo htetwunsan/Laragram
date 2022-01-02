@@ -34,7 +34,7 @@ export default function MessageLikedParticipants({ message, hideMessageLikedDial
     }
 
     return (
-        <div className="bg-black bg-opacity-65 fixed inset-0 flex flex-col items-stretch justify-end overflow-hidden z-1000"
+        <div className="bg-black bg-opacity-65 absolute inset-0 flex flex-col items-stretch justify-end overflow-hidden z-1000"
             role="button" onClick={handleClickOutside}>
             <div className="bg-white flex flex-col items-stretch overflow-hidden rounded-t-xl"
                 style={animation}

@@ -246,7 +246,7 @@ class Chat extends Component {
     render() {
         const { room, content, messages, typingUsers, showMessageLiked } = this.state;
         return <>
-            <section id="section_main" className="flex-grow flex flex-col items-stretch overflow-hidden">
+            <section id="section_main" className="flex-grow flex flex-col items-stretch overflow-hidden relative">
                 <TopNavigation
                     left={<BackButton handleClick={e => this.props.navigate(-1)} />}
                     center={<ChatNavheading room={room} />}
