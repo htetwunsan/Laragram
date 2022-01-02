@@ -83,7 +83,9 @@ class Story extends Model
     public function delete()
     {
 
-        $this->views()->delete();
+        $this->views->each(function ($view) {
+            $view->delete();
+        });
 
         return parent::delete();
     }

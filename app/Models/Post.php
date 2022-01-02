@@ -7,6 +7,7 @@ use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use function Illuminate\Events\queueable;
 
 
 /**
@@ -46,6 +47,15 @@ class Post extends Model
     use HasFactory, FormattedTimestamps;
 
     protected $fillable = ['caption'];
+
+    protected static function booted()
+    {
+        static::deleting(queueable(function (Post $post) {
+            $post->likes->each(function ($like) {
+                $like->delete();
+            });
+        }));
+    }
 
     public function addAuthRelatedAttributes(array $attributes)
     {
@@ -153,12 +163,5 @@ class Post extends Model
     public function isLikedBy(User $user): bool
     {
         return $this->likedByUsers()->where('user_id', $user->id)->exists();
-    }
-
-    public function delete()
-    {
-        $this->likes()->delete();
-
-        return parent::delete();
     }
 }

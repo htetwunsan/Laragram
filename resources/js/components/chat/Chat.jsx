@@ -12,6 +12,7 @@ import { AppContext } from './AppContext';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
 import { Link } from "react-router-dom";
+import MessageLikedParticipants from "./MessageLikedParticipants";
 
 TimeAgo.addDefaultLocale(en);
 
@@ -80,7 +81,19 @@ class Chat extends Component {
             },
             markMessagesAsSeen: () => {
                 axios.post(`/api/rooms/${this.roomId}/messages/see`);
-            }
+            },
+            likeMssage: message => {
+                axios.post(`/api/rooms/${this.roomId}/messages/${message.id}/like`)
+                    .then(response => {
+                        this.setStateMessageLikedByParticpants(response.data);
+                    });
+            },
+            unlikeMessage: message => {
+                axios.post(`/api/rooms/${this.roomId}/messages/${message.id}/unlike`)
+                    .then(response => {
+                        this.setStateMessageLikedByParticpants(response.data);
+                    });
+            },
         };
 
         this.messagesRef = React.createRef();
@@ -91,6 +104,7 @@ class Chat extends Component {
             room: null,
             messages: [],
             typingUsers: [],
+            showMessageLiked: null,
         };
     }
 
@@ -107,14 +121,13 @@ class Chat extends Component {
                 this.Repo.markMessageAsSeen(e.message);
             })
             .listen('MessageSeen', e => {
-                this.setState(({ messages }) => ({
-                    messages: messages.map(message => {
-                        if (message.id == e.message.id) {
-                            return e.message;
-                        }
-                        return message;
-                    })
-                }));
+                this.setStateMessageSeenByParticipants(e.message);
+            })
+            .listen('MessageLiked', e => {
+                this.setStateMessageLikedByParticpants(e.message);
+            })
+            .listen('MessageUnliked', e => {
+                this.setStateMessageLikedByParticpants(e.message);
             })
             .listenForWhisper('Typing', e => {
                 if (e.isTyping) {
@@ -158,6 +171,28 @@ class Chat extends Component {
         });
     }
 
+    setStateMessageSeenByParticipants = newMessage => {
+        this.setState(({ messages }) => ({
+            messages: messages.map(message => {
+                if (message.id == newMessage.id) {
+                    message.seen_by_participants = newMessage.seen_by_participants;
+                }
+                return message;
+            })
+        }));
+    }
+
+    setStateMessageLikedByParticpants = newMessage => {
+        this.setState(({ messages }) => ({
+            messages: messages.map(message => {
+                if (message.id == newMessage.id) {
+                    message.liked_by_participants = newMessage.liked_by_participants;
+                }
+                return message;
+            })
+        }));
+    }
+
     handleScroll = _.throttle(e => {
         const scrollOffset = 300;
         if (e.target.scrollTop - scrollOffset <= 0) {
@@ -173,6 +208,22 @@ class Chat extends Component {
 
     isMe = (message) => {
         return this.context.authUser.id == message.user_id
+    }
+
+    handleClickLikeMessage = (e, message) => {
+        this.Repo.likeMssage(message);
+    }
+
+    handleClickUnlikeMessage = (e, message) => {
+        this.Repo.unlikeMessage(message);
+    }
+
+    showMessageLikedDialog = (message) => {
+        this.setState({ showMessageLiked: message });
+    }
+
+    hideMessageLikedDialog = () => {
+        this.setState({ showMessageLiked: null });
     }
 
     renderRight = () => {
@@ -193,8 +244,8 @@ class Chat extends Component {
     }
 
     render() {
-        const { room, content, messages, typingUsers } = this.state;
-        return (
+        const { room, content, messages, typingUsers, showMessageLiked } = this.state;
+        return <>
             <section id="section_main" className="flex-grow flex flex-col items-stretch overflow-hidden">
                 <TopNavigation
                     left={<BackButton handleClick={e => this.props.navigate(-1)} />}
@@ -228,7 +279,7 @@ class Chat extends Component {
                         this.isMe(messages[0]) &&
                         messages[0].seen_by_participants?.length > 0 &&
                         <div className="self-end flex flex-col items-stretch" style={{ maxWidth: '60%' }}>
-                            <span className="block text-xs text-triple142 leading-4" style={{ marginTop: '-2px', marginBottom: '-3px' }}>
+                            <span className="block text-xs text-triple142 leading-4" style={{ marginTop: '-2px' }}>
                                 Seen {
                                     new TimeAgo().format(Date.parse(messages[0].seen_by_participants[0].pivot.created_at), 'round-minute')
                                 }
@@ -241,7 +292,7 @@ class Chat extends Component {
                         this.isMe(messages[0]) &&
                         messages[0].seen_by_participants?.length > 0 &&
                         <div className="self-end flex flex-col items-stretch" style={{ maxWidth: '60%' }}>
-                            <span className="block text-xs text-triple142 leading-4" style={{ marginTop: '-2px', marginBottom: '-3px' }}>
+                            <span className="block text-xs text-triple142 leading-4" style={{ marginTop: '-2px' }}>
                                 Seen By {
                                     messages[0].seen_by_participants.map(participant => participant.user.name).join(', ')
                                 }
@@ -249,7 +300,12 @@ class Chat extends Component {
                         </div>
                     }
                     {
-                        messages.map(message => <Message message={message} key={message.id} />)
+                        messages.map(
+                            message => <Message message={message}
+                                handleClickLikeMessage={this.handleClickLikeMessage}
+                                showMessageLikedDialog={this.showMessageLikedDialog}
+                                key={message.id} />
+                        )
                     }
                 </main>
 
@@ -277,7 +333,14 @@ class Chat extends Component {
                     </div>
                 </div>
             </section>
-        );
+            {
+                showMessageLiked &&
+                <MessageLikedParticipants
+                    message={showMessageLiked}
+                    hideMessageLikedDialog={this.hideMessageLikedDialog}
+                    handleClickUnlikeMessage={this.handleClickUnlikeMessage} />
+            }
+        </>;
     }
 }
 

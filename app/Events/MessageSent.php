@@ -24,6 +24,7 @@ class MessageSent implements ShouldBroadcast
     public function __construct(Message $message)
     {
         $this->message = $message;
+        $this->message->loadMissing('participant');
     }
 
     /**

@@ -34,7 +34,7 @@ class App extends React.Component {
                 <Routes>
                     <Route path="/direct">
                         <Route index element={<Navigate to="inbox" />} />
-                        <Route path="inbox" element={<Chats />} />
+                        <Route path="inbox" element={<Navigate to="/direct/r/1" />} />
                         <Route path="new" element={<New />} />
                         <Route path="r/:roomId" element={<Chat />} />
                         <Route path="r/:roomId/details" element={<ChatDetails />} />

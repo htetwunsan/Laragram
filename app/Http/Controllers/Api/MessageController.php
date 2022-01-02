@@ -8,14 +8,13 @@ use App\Http\Controllers\Controller;
 use App\Models\Room;
 use Illuminate\Http\Request;
 use Auth;
-use Log;
 
 class MessageController extends Controller
 {
     public function index(Room $room)
     {
         return Auth::user()->becomeParticipantOf($room)
-            ->roomMessagesNotDeleted()->with(['participant'])
+            ->roomMessagesNotDeleted()->with(['participant', 'likedByParticipants'])
             ->latest()->latest('id')->cursorPaginate();
     }
 

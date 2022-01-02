@@ -229,4 +229,14 @@ class Participant extends Model
     {
         return $this->deletedMessages()->firstOrCreate(['message_id' => $message->id]);
     }
+
+    public function likeMessage(Message $message)
+    {
+        return $message->likeAs($this);
+    }
+
+    public function unlikeMessage(Message $message)
+    {
+        return $message->unlikeAs($this);
+    }
 }

@@ -15,7 +15,9 @@ class SeenMessageController extends Controller
     public function seeMessage(Message $message)
     {
         $seenMessage = Auth::user()->becomeParticipantOf($message->room)->seeMessage($message);
-        broadcast(new MessageSeen($message))->toOthers();
+        if ($seenMessage->wasRecentlyCreated) {
+            broadcast(new MessageSeen($message))->toOthers();
+        }
         return $seenMessage;
     }
 
@@ -24,8 +26,11 @@ class SeenMessageController extends Controller
         $participant = Auth::user()->becomeParticipantOf($room);
         $messages = $participant->roomMessagesNotMineNotDeletedNotSeen()->latest()->latest('id')->get();
         $seenMessages = $participant->seeMessages($messages);
-        if (!is_null($messages->first())) {
-            broadcast(new MessageSeen($messages->first()))->toOthers();
+
+        $latestSeenMessage = $seenMessages->first();
+        $latestMessage = $messages->first();
+        if (!is_null($latestMessage) && !is_null($latestSeenMessage) && $latestSeenMessage->wasRecentlyCreated) {
+            broadcast(new MessageSeen($latestMessage))->toOthers();
         }
         return $seenMessages;
     }

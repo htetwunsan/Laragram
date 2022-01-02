@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use function Illuminate\Events\queueable;
 
 /**
  * App\Models\Message
@@ -57,6 +57,12 @@ class Message extends Model
         static::created(function (Message $message) {
             $message->room->touch();
         });
+
+        static::deleting(queueable(function (Message $message) {
+            $message->likes->each(function (ParticipantLike $like) {
+                $like->delete();
+            });
+        }));
     }
 
     public function participant()
@@ -87,6 +93,42 @@ class Message extends Model
     public function seenByParticipants()
     {
         return $this->belongsToMany(Participant::class, SeenMessage::class, 'message_id', 'participant_id')->withTimestamps();
+    }
+
+    public function likes()
+    {
+        return $this->morphMany(ParticipantLike::class, 'likeable');
+    }
+
+    public function likeAs(Participant $participant): ParticipantLike
+    {
+        return $this->likes()->firstOrCreate(['participant_id' => $participant->id]);
+    }
+
+    /**
+     * @param Participant $participant
+     * @return ParticipantLike|null
+     */
+    public function unlikeAs(Participant $participant)
+    {
+        $like = $this->likes()->firstWhere('participant_id', $participant->id);
+
+        if (!is_null($like)) {
+            $like->delete();
+        }
+
+        return $like;
+    }
+
+    public function likedByParticipants()
+    {
+        return $this->belongsToMany(Participant::class, ParticipantLike::class, 'likeable_id', 'participant_id')
+            ->where('likeable_type', Message::class);
+    }
+
+    public function isLikedBy(Participant $participant): bool
+    {
+        return $this->likedByParticipants()->where('participant_id', $participant->id)->exists();
     }
 
     public function scopeText($query)

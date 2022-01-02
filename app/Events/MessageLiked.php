@@ -11,12 +11,11 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class MessageSeen implements ShouldBroadcast
+class MessageLiked implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public Message $message;
-
     /**
      * Create a new event instance.
      *
@@ -25,7 +24,7 @@ class MessageSeen implements ShouldBroadcast
     public function __construct(Message $message)
     {
         $this->message = $message;
-        $this->message->loadMissing('seenByParticipants');
+        $this->message->loadMissing('likedByParticipants');
     }
 
     /**

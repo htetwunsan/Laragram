@@ -191,3 +191,23 @@ input[type="search"]::-webkit-search-results-decoration {
     @apply w-6 h-3;
     background: url("../images/bundle-3.png") no-repeat -520px -475px / 569px 521px;
 }
+
+@keyframes open-message-liked-participants {
+    from {
+        transform: translateY(100%);
+    }
+
+    to {
+        transform: translateY(0%);
+    }
+}
+
+@keyframes close-message-liked-participants {
+    from {
+        transform: translateY(0%);
+    }
+
+    to {
+        transform: translateY(100%);
+    }
+}

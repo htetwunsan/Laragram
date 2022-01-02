@@ -3,7 +3,7 @@ import { AppContext } from "./AppContext";
 import ProfileImage from '../ProfileImage';
 import clsx from 'clsx';
 
-export default function Message({ message }) {
+export default function Message({ message, handleClickLikeMessage, showMessageLikedDialog }) {
 
     const context = useContext(AppContext);
 
@@ -11,11 +11,45 @@ export default function Message({ message }) {
         return context.authUser.id == message.user_id;
     };
 
-    return (
+    const handleClick = e => {
+        e.stopPropagation();
+        showMessageLikedDialog(message);
+    };
+
+    const renderLike = () => {
+        if (!message.liked_by_participants || message.liked_by_participants.length <= 0) return null;
+        return <>
+            <div className="order-last h-3"></div>
+            <div className="bg-triple239 absolute bottom-1 right-0 z-10 flex flex-col items-stretch p-1.5 border-2 border-white"
+                style={{ borderRadius: '20px' }}>
+                <div className="flex flex-row gap-x-1" role="button" onClick={handleClick}>
+                    <div className="flex flex-col items-stretch">
+                        <div className="text-xs text-center font-semibold leading-18px h-3.5 w-3.5 ">
+                            ❤️
+                        </div>
+                    </div>
+                    {
+                        message.liked_by_participants.length > 1 &&
+                        message.liked_by_participants.map(p => {
+                            return (
+                                <div className="flex items-center justify-center h-3.5 w-3.5 rounded-full" key={p.id}>
+                                    <ProfileImage url={p.user.profile_image} />
+                                </div>
+                            );
+                        })
+                    }
+                </div>
+            </div>
+        </>;
+    };
+
+    return <>
 
         <div className={clsx({ 'self-end': isMe() }, { 'self-start': !isMe() }, 'flex', 'flex-col', 'items-stretch')} style={{ maxWidth: '60%' }}>
-            <div className="flex flex-col items-stretch mb-2">
 
+            <div className={clsx('flex', 'flex-col', 'items-stretch', 'pb-2', 'relative')} role="button"
+                onDoubleClick={e => handleClickLikeMessage(e, message)}>
+                {renderLike()}
                 <div className="flex flex-row items-center">
                     {
                         !isMe() &&
@@ -53,5 +87,5 @@ export default function Message({ message }) {
                 </div>
             </div>
         </div>
-    );
+    </>;
 }

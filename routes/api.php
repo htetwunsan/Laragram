@@ -7,6 +7,7 @@ use App\Http\Controllers\SaveController;
 use App\Http\Controllers\ViewController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\ParticipantController;
+use App\Http\Controllers\Api\ParticipantLikeController;
 use App\Http\Controllers\Api\RoomController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\SeenMessageController;
@@ -87,6 +88,12 @@ Route::middleware('auth:sanctum')->name('api.')->group(function () {
 
     Route::post('/rooms/{room}/messages', [MessageController::class, 'store'])
         ->name('room.message.store');
+
+    Route::post('/rooms/{room}/messages/{message}/like', [ParticipantLikeController::class, 'like'])
+        ->name('room.message.like');
+
+    Route::post('/rooms/{room}/messages/{message}/unlike', [ParticipantLikeController::class, 'unlike'])
+        ->name('room.message.unlike');
 
     Route::post('/messages/{message}/see', [SeenMessageController::class, 'seeMessage'])
         ->name('message.see');
