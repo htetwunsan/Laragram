@@ -38,7 +38,7 @@ use function Illuminate\Events\queueable;
  * @method static \Illuminate\Database\Eloquent\Builder|Message text()
  * @method static \Illuminate\Database\Eloquent\Builder|Message whereContent($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Message whereContentType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Message file()
+ * @method static \Illuminate\Database\Eloquent\Builder|Message image()
  * @method static \Illuminate\Database\Eloquent\Builder|Message like()
  */
 class Message extends Model
@@ -141,8 +141,8 @@ class Message extends Model
         return $query->whereContentType('like');
     }
 
-    public function scopeFile($query)
+    public function scopeImage($query)
     {
-        return $query->whereContentType('file');
+        return $query->whereContentType('image');
     }
 }
