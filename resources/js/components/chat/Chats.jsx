@@ -83,8 +83,30 @@ export default class Chats extends Component {
                             return (
                                 <Link className="flex flex-col items-stretch" to={"/direct/r/" + room.id} key={room.id}>
                                     <div className="flex px-4 py-2">
-                                        <div className="flex flex-none items-center justify-center rounded-full mr-3 relative" style={{ width: "56px", height: "56px" }}>
-                                            <ProfileImage url={otherParticipants[0].user.profile_image} />
+                                        <div className="flex-none flex flex-col items-stretch rounded-full mr-3 relative" style={{ width: "56px", height: "56px" }}>
+                                            {
+                                                room.type == 'solo' &&
+                                                <ProfileImage url={participant.user.profile_image} />
+                                            }
+                                            {
+                                                room.type == 'direct' &&
+                                                <ProfileImage url={otherParticipants[0].user.profile_image} />
+                                            }
+                                            {
+                                                room.type == 'group' &&
+                                                otherParticipants.slice(0, 2).map((p, i) => {
+                                                    if (i == 0) {
+                                                        return (<div className="flex w-10 h-10" key={p.id}>
+                                                            <ProfileImage url={p.user.profile_image} />
+                                                        </div>);
+                                                    }
+                                                    return (
+                                                        <div className="absolute right-0 bottom-0 flex w-10 h-10" key={p.id}>
+                                                            <ProfileImage url={p.user.profile_image} />
+                                                        </div>
+                                                    );
+                                                })
+                                            }
 
                                             <div className="absolute w-5 h-5 border-white rounded-full mt-0.5 ml-0.5 z-10"
                                                 style={{ left: '33px', top: '33px', backgroundColor: "rgb(120, 222, 69)", borderWidth: '3.5px' }}></div>
@@ -94,7 +116,18 @@ export default class Chats extends Component {
                                             <div className="flex">
                                                 <span className="block text-sm text-triple38 leading-18px overflow-hidden overflow-ellipsis whitespace-nowrap" style={{ marginTop: '-3px', marginBottom: '-4px' }}>
                                                     <span className={clsx(!room.latest_message?.seen_by_auth_user && "font-semibold")}>
-                                                        {otherParticipants[0].user.name}
+                                                        {
+                                                            room.type == 'solo' &&
+                                                            participant.user.name
+                                                        }
+                                                        {
+                                                            room.type == 'direct' &&
+                                                            otherParticipants[0].user.name
+                                                        }
+                                                        {
+                                                            room.type == 'group' &&
+                                                            room.name
+                                                        }
                                                     </span>
                                                 </span>
                                             </div>
@@ -106,16 +139,21 @@ export default class Chats extends Component {
                                                             {room.latest_message.content_type == 'text' &&
                                                                 <span className="block text-sm text-triple142 leading-18px overflow-hidden overflow-ellipsis whitespace-nowrap">
                                                                     <span className={clsx(!room.latest_message?.seen_by_auth_user && "text-triple38 font-semibold")}>
+                                                                        {room.type == 'group' && room.latest_message.participant.user.username + ': '}
                                                                         {room.latest_message.content}
                                                                     </span>
                                                                 </span>
                                                             }
                                                             {room.latest_message.content_type == 'like' &&
-                                                                <span className="block text-sm leading-18px">❤️</span>
+                                                                <span className="block text-sm leading-18px">
+                                                                    {room.type == 'group' && room.latest_message.participant.user.username + ': '}
+                                                                    ❤️
+                                                                </span>
                                                             }
                                                             {room.latest_message.content_type == 'image' &&
                                                                 <span className="block text-sm text-triple142 leading-18px overflow-hidden overflow-ellipsis whitespace-nowrap">
                                                                     <span className={clsx(!room.latest_message?.seen_by_auth_user && "text-triple38 font-semibold")}>
+                                                                        {room.type == 'group' && room.latest_message.participant.user.username + ': '}
                                                                         Sent an image
                                                                     </span>
                                                                 </span>

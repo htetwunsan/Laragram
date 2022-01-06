@@ -1,18 +1,19 @@
 import React from 'react';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-export default function NextButton({ users }) {
+export default function AddPeopleNextButton({ users }) {
 
+    const { roomId } = useParams();
     const navigate = useNavigate();
 
     const handleClick = e => {
-        axios.post('/api/rooms', { user_ids: users.map(user => user.id) })
+        // change
+        axios.post('/api/rooms/' + roomId + '/participants', { user_ids: users.map(user => user.id) })
             .then(response => {
-                const room = response.data;
-                navigate('/direct/r/' + room.id);
-            }, error => {
-                console.log(error);
-                // showBottomToast(error);
+                navigate('/direct/r/' + roomId + '/details', { replace: true });
+            })
+            .catch(error => {
+                showBottomeToast(error);
             });
     }
 

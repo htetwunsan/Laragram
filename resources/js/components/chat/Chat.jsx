@@ -12,7 +12,7 @@ import { AppContext } from './AppContext';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
 import { Link } from "react-router-dom";
-import MessageLikedParticipants from "./MessageLikedParticipants";
+import MessageLikedParticipantsDialog from "./MessageLikedParticipantsDialog";
 
 TimeAgo.addDefaultLocale(en);
 
@@ -37,11 +37,11 @@ class Chat extends Component {
                         if (initial && response.data.data.length > 0) {
                             axios.get(`/api/messages/${response.data.data[0].id}/seen-by-participants`).then(res => {
                                 response.data.data[0].seen_by_participants = res.data.seen_by_participants;
-                                this.setState(({ messages }) => ({ messages: [...messages, ...response.data.data] }));
+                                this.setStateMessages(response.data.data);
                             });
                             return;
                         }
-                        this.setState(({ messages }) => ({ messages: [...messages, ...response.data.data] }));
+                        this.setStateMessages(response.data.data);
                     }).finally(() => this.Repo.isFetching = false);
             },
             postTextMessage: content => {
@@ -85,13 +85,13 @@ class Chat extends Component {
             likeMssage: message => {
                 axios.post(`/api/rooms/${this.roomId}/messages/${message.id}/like`)
                     .then(response => {
-                        this.setStateMessageLikedByParticpants(response.data);
+                        this.setStateMessageLikedByParticipants(response.data);
                     });
             },
             unlikeMessage: message => {
                 axios.post(`/api/rooms/${this.roomId}/messages/${message.id}/unlike`)
                     .then(response => {
-                        this.setStateMessageLikedByParticpants(response.data);
+                        this.setStateMessageLikedByParticipants(response.data);
                     });
             },
         };
@@ -104,7 +104,7 @@ class Chat extends Component {
             room: null,
             messages: [],
             typingUsers: [],
-            showMessageLiked: null,
+            showMessageLikedParticipantsDialog: null,
         };
     }
 
@@ -116,6 +116,9 @@ class Chat extends Component {
             .joining(user => { })
             .leaving(user => { })
             .error(error => { })
+            .listen('RoomUpdated', e => {
+                this.setState({ room: e.room });
+            })
             .listen('MessageSent', e => {
                 this.setStateMessage(e.message);
                 this.Repo.markMessageAsSeen(e.message);
@@ -124,10 +127,10 @@ class Chat extends Component {
                 this.setStateMessageSeenByParticipants(e.message);
             })
             .listen('MessageLiked', e => {
-                this.setStateMessageLikedByParticpants(e.message);
+                this.setStateMessageLikedByParticipants(e.message);
             })
             .listen('MessageUnliked', e => {
-                this.setStateMessageLikedByParticpants(e.message);
+                this.setStateMessageLikedByParticipants(e.message);
             })
             .listenForWhisper('Typing', e => {
                 if (e.isTyping) {
@@ -152,9 +155,27 @@ class Chat extends Component {
         this.setStateContent(e.target.value);
     }
 
+    insertDateMessages = messages => {
+        return messages.flatMap((m, i) => {
+            if (i == 0) return m;
+            const pm = messages[i - 1];
+            if (pm.id < 0) {
+                return m;
+            }
+            if (Math.abs(new Date(m.created_at) - new Date(pm.created_at)) >= 900000) {
+                return [{ ...pm, id: -pm.id, content_type: 'date', content: timeSince(pm.created_at) }, m];
+            }
+            return m;
+        });
+    }
+
+    setStateMessages = newMessages => {
+        this.setState(({ messages }) => ({ messages: this.insertDateMessages([...messages, ...newMessages]) }));
+    }
+
     setStateMessage = message => {
         this.setState(({ messages }) => ({
-            messages: [message, ...messages]
+            messages: this.insertDateMessages([message, ...messages])
         }));
     }
 
@@ -182,7 +203,7 @@ class Chat extends Component {
         }));
     }
 
-    setStateMessageLikedByParticpants = newMessage => {
+    setStateMessageLikedByParticipants = newMessage => {
         this.setState(({ messages }) => ({
             messages: messages.map(message => {
                 if (message.id == newMessage.id) {
@@ -218,12 +239,18 @@ class Chat extends Component {
         this.Repo.unlikeMessage(message);
     }
 
-    showMessageLikedDialog = (message) => {
-        this.setState({ showMessageLiked: message });
+    showMessageLikedParticipantsDialog = (message) => {
+        this.setState({ showMessageLikedParticipantsDialog: message });
     }
 
-    hideMessageLikedDialog = () => {
-        this.setState({ showMessageLiked: null });
+    hideMessageLikedParticipantsDialog = () => {
+        this.setState({ showMessageLikedParticipantsDialog: null });
+    }
+
+    handleClickDeleteChat = e => {
+        axios.post('/api/rooms/' + this.roomId + '/delete-room').then(response => {
+            this.props.navigate('/direct/inbox');
+        });
     }
 
     renderRight = () => {
@@ -244,7 +271,8 @@ class Chat extends Component {
     }
 
     render() {
-        const { room, content, messages, typingUsers, showMessageLiked } = this.state;
+        const { room, content, messages, typingUsers, showMessageLikedParticipantsDialog } = this.state;
+        const { authUser } = this.context;
         return <>
             <section id="section_main" className="flex-grow flex flex-col items-stretch overflow-hidden relative">
                 <TopNavigation
@@ -257,7 +285,7 @@ class Chat extends Component {
                     {
                         typingUsers.map(user => {
                             return (
-                                <div className="self-start flex flex-col items-stretch" style={{ maxWidth: '60%' }} key={user.id}>
+                                <div className="self-start flex flex-col items-stretch" style={{ maxWidth: '70%' }} key={user.id}>
                                     <div className="flex flex-row items-center">
                                         <div className="flex items-center justify-center">
                                             <div className="flex items-center justify-center w-6 h-6 rounded-full relative mr-3">
@@ -266,6 +294,10 @@ class Chat extends Component {
                                         </div>
 
                                         <div className="text-sm text-triple142 leading-18px">
+                                            {
+                                                room.type == 'group' &&
+                                                <span>{user.name} </span>
+                                            }
                                             Typing...
                                         </div>
                                     </div>
@@ -278,7 +310,7 @@ class Chat extends Component {
                         messages.length > 0 &&
                         this.isMe(messages[0]) &&
                         messages[0].seen_by_participants?.length > 0 &&
-                        <div className="self-end flex flex-col items-stretch" style={{ maxWidth: '60%' }}>
+                        <div className="self-end flex flex-col items-stretch" style={{ maxWidth: '70%' }}>
                             <span className="block text-xs text-triple142 leading-4" style={{ marginTop: '-2px' }}>
                                 Seen {
                                     new TimeAgo().format(Date.parse(messages[0].seen_by_participants[0].pivot.created_at), 'round-minute')
@@ -291,7 +323,7 @@ class Chat extends Component {
                         messages.length > 0 &&
                         this.isMe(messages[0]) &&
                         messages[0].seen_by_participants?.length > 0 &&
-                        <div className="self-end flex flex-col items-stretch" style={{ maxWidth: '60%' }}>
+                        <div className="self-end flex flex-col items-stretch" style={{ maxWidth: '70%' }}>
                             <span className="block text-xs text-triple142 leading-4" style={{ marginTop: '-2px' }}>
                                 Seen By {
                                     messages[0].seen_by_participants.map(participant => participant.user.name).join(', ')
@@ -301,43 +333,92 @@ class Chat extends Component {
                     }
                     {
                         messages.map(
-                            message => <Message message={message}
+                            (message, index) => <Message message={message} room={room} index={index}
                                 handleClickLikeMessage={this.handleClickLikeMessage}
-                                showMessageLikedDialog={this.showMessageLikedDialog}
+                                showMessageLikedParticipantsDialog={this.showMessageLikedParticipantsDialog}
                                 key={message.id} />
                         )
                     }
                 </main>
 
                 <div className="flex-none flex flex-col items-stretch order-last z-50">
-                    <div className="flex flex-col items-stretch p-4">
-                        <div className="flex items-center border border-triple219" style={{ borderRadius: '22px', padding: '0 8px 0 11px' }}>
-                            <div className="flex flex-grow items-center mr-1">
-                                <textarea
-                                    className="flex-grow text-sm text-triple38 leading-18px break-words resize-none border-none focus:outline-none focus:ring-0"
-                                    style={{ maxHeight: '90px', padding: '8px 9px 8px 9px' }}
-                                    ref={this.textAreaRef}
-                                    value={content}
-                                    onChange={this.handleChangeContent}
-                                    placeholder="Message..."
-                                    autoComplete="off"
-                                    required
-                                    rows="1"></textarea>
+                    {
+                        room?.type == 'direct' &&
+                        (() => {
+                            const otherParticipant = room.participants.filter(p => p.id != authUser.id)[0];
+                            if (otherParticipant.user.is_blocked_by_auth_user) {
+                                return (
+                                    <div className="bg-triple250 flex flex-col items-stretch" style={{ height: '50px' }}>
+                                        <div className="flex-grow flex items-center justify-center gap-x-2">
+                                            <div className="text-sm text-triple38 text-center leading-18px -mb-1" style={{ marginTop: '-3px' }}>
+                                                You blocked {otherParticipant.user.username}.
+                                            </div>
+                                            <button className="flex flex-col items-stretch" type="button"
+                                                onClick={this.handleClickDeleteChat}>
+                                                <span className="block text-sm text-fb_blue text-center leading-18px -mb-1" style={{ marginTop: '-3px' }}>
+                                                    Delete chat.
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                );
+                            }
+                            return (
+                                <div className="flex flex-col items-stretch p-4">
+                                    <div className="flex items-center border border-triple219" style={{ borderRadius: '22px', padding: '0 8px 0 11px' }}>
+                                        <div className="flex flex-grow items-center mr-1">
+                                            <textarea
+                                                className="flex-grow text-sm text-triple38 leading-18px break-words resize-none border-none focus:outline-none focus:ring-0"
+                                                style={{ maxHeight: '90px', padding: '8px 9px 8px 9px' }}
+                                                ref={this.textAreaRef}
+                                                value={content}
+                                                onChange={this.handleChangeContent}
+                                                placeholder="Message..."
+                                                autoComplete="off"
+                                                required
+                                                rows="1"></textarea>
+                                        </div>
+
+                                        {content && <SendMessageButton handleClick={this.handleClickSendMessage} />}
+
+                                        {!content && <SendImageButton postImageMessage={this.Repo.postImageMessage} />}
+                                        {!content && <SendLikeButton handleClick={e => this.Repo.postLikeMessage()} />}
+                                    </div>
+                                </div>
+                            );
+                        })()
+                    }
+                    {
+                        room?.type != 'direct' &&
+                        <div className="flex flex-col items-stretch p-4">
+                            <div className="flex items-center border border-triple219" style={{ borderRadius: '22px', padding: '0 8px 0 11px' }}>
+                                <div className="flex flex-grow items-center mr-1">
+                                    <textarea
+                                        className="flex-grow text-sm text-triple38 leading-18px break-words resize-none border-none focus:outline-none focus:ring-0"
+                                        style={{ maxHeight: '90px', padding: '8px 9px 8px 9px' }}
+                                        ref={this.textAreaRef}
+                                        value={content}
+                                        onChange={this.handleChangeContent}
+                                        placeholder="Message..."
+                                        autoComplete="off"
+                                        required
+                                        rows="1"></textarea>
+                                </div>
+
+                                {content && <SendMessageButton handleClick={this.handleClickSendMessage} />}
+
+                                {!content && <SendImageButton postImageMessage={this.Repo.postImageMessage} />}
+                                {!content && <SendLikeButton handleClick={e => this.Repo.postLikeMessage()} />}
                             </div>
-
-                            {content && <SendMessageButton handleClick={this.handleClickSendMessage} />}
-
-                            {!content && <SendImageButton postImageMessage={this.Repo.postImageMessage} />}
-                            {!content && <SendLikeButton handleClick={e => this.Repo.postLikeMessage()} />}
                         </div>
-                    </div>
+                    }
                 </div>
             </section>
             {
-                showMessageLiked &&
-                <MessageLikedParticipants
-                    message={showMessageLiked}
-                    hideMessageLikedDialog={this.hideMessageLikedDialog}
+                showMessageLikedParticipantsDialog &&
+                <MessageLikedParticipantsDialog
+                    message={showMessageLikedParticipantsDialog}
+                    hideMessageLikedParticipantsDialog={this.hideMessageLikedParticipantsDialog}
                     handleClickUnlikeMessage={this.handleClickUnlikeMessage} />
             }
         </>;

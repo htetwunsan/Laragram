@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\ParticipantController;
 use App\Http\Controllers\Api\ParticipantLikeController;
 use App\Http\Controllers\Api\RoomController;
+use App\Http\Controllers\Api\RoomParticipantController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\SeenMessageController;
 use App\Models\User;
@@ -52,6 +53,8 @@ Route::middleware('auth:sanctum')->name('api.')->group(function () {
         ->name('user.block');
     Route::post('/users/{user}/unblock', [BlockingController::class, 'unblock'])
         ->name('user.unblock');
+    Route::post('/users/{user}/is-blocking', [BlockingController::class, 'isBlocking'])
+        ->name('user.is-blocking');
 
     Route::post('/posts/{post}/like', [LikeController::class, 'postLike'])
         ->name('post.like');
@@ -82,6 +85,18 @@ Route::middleware('auth:sanctum')->name('api.')->group(function () {
 
     Route::get('/rooms/{room}', [RoomController::class, 'show'])
         ->name('room.show');
+
+    Route::match(['put', 'patch'], '/rooms/{room}', [RoomController::class, 'update'])
+        ->name('room.update');
+
+    Route::post('/rooms/{room}/participants', [RoomParticipantController::class, 'store'])
+        ->name('room.participant.store');
+
+    Route::delete('/rooms/{room}/participants/{participant}', [RoomParticipantController::class, 'destroy'])
+        ->name('room.participant.destroy');
+
+    Route::match(['put', 'patch'], '/rooms/{room}/participants/{participant}', [RoomParticipantController::class, 'update'])
+        ->name('room.participant.update');
 
     Route::get('/rooms/{room}/messages', [MessageController::class, 'index'])
         ->name('room.message.index');

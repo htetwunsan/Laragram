@@ -99,6 +99,8 @@ use Str;
  * @property-read int|null $participants_count
  * @property-read Collection|\App\Models\Room[] $deletedRooms
  * @property-read int|null $deleted_rooms_count
+ * @property-read Collection|\App\Models\Room[] $notDeletedRooms
+ * @property-read int|null $not_deleted_rooms_count
  */
 class User extends Authenticatable
 {
@@ -691,6 +693,12 @@ class User extends Authenticatable
     public function rooms()
     {
         return $this->belongsToMany(Room::class, Participant::class, 'user_id', 'room_id')
+            ->withTimestamps();
+    }
+
+    public function notDeletedRooms()
+    {
+        return $this->belongsToMany(Room::class, Participant::class, 'user_id', 'room_id')
             ->withPivot('room_deleted_at')
             ->wherePivotNull('room_deleted_at')
             ->withTimestamps();
@@ -703,18 +711,4 @@ class User extends Authenticatable
             ->wherePivotNotNull('room_deleted_at')
             ->withTimestamps();
     }
-
-    // public function rooms(): BelongsToMany
-    // {
-    //     return $this->belongsToMany(Room::class, Participant::class, 'user_id', 'room_id')
-    //         ->withPivot('room_deleted_at')
-    //         ->wherePivotNull('room_deleted_at');
-    // }
-
-    // public function deletedRooms(): BelongsToMany
-    // {
-    //     return $this->belongsToMany(Room::class, Participant::class, 'user_id', 'room_id')
-    //         ->withPivot('room_deleted_at')
-    //         ->wherePivotNotNull('room_deleted_at');
-    // }
 }

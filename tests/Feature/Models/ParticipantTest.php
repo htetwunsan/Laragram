@@ -8,6 +8,7 @@ use App\Models\Participant;
 use App\Models\User;
 use App\Models\Room;
 use App\Models\SeenMessage;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -24,12 +25,12 @@ class ParticipantTest extends TestCase
 
         $this->users = User::find(User::factory(3)->create()->pluck('id'));
 
-        $this->soloRoom = Room::create(['type' => 'solo'])->fresh();
+        $this->soloRoom = Room::create(['type' => 'solo']);
         $this->soloParticipant = $this->soloRoom->participants()->create([
             'user_id' => $this->users[0]->id
         ])->fresh();
 
-        $this->directRoom = Room::create(['type' => 'direct'])->fresh();
+        $this->directRoom = Room::create(['type' => 'direct']);
         $this->directParticipants = Participant::find(
             $this->directRoom->participants()->createMany([
                 ['user_id' => $this->users[0]->id],
@@ -37,7 +38,7 @@ class ParticipantTest extends TestCase
             ])->pluck('id')
         );
 
-        $this->groupRoom = Room::create(['type' => 'group'])->fresh();
+        $this->groupRoom = Room::create(['type' => 'group']);
         $this->groupParticipants = Participant::find(
             $this->groupRoom->participants()->createMany([
                 ['user_id' => $this->users[0]->id],
@@ -45,6 +46,10 @@ class ParticipantTest extends TestCase
                 ['user_id' => $this->users[2]->id]
             ])->pluck('id')
         );
+
+        $this->soloRoom->fresh();
+        $this->directRoom->fresh();
+        $this->groupRoom->fresh();
     }
 
     public function test_user_return_correct_relation()

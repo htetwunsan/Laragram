@@ -4,10 +4,10 @@ import BackButton from "../BackButton";
 import NavHeading from "../NavHeading";
 import SearchResultUser from './SearchResultUser';
 import SelectedUser from './SelectedUser';
-import NewNextButton from "./NewNextButton";
+import AddPeopleNextButton from "./AddPeopleNextButton";
 import WithRouter from '../WithRouter';
 
-class New extends Component {
+class AddPeople extends Component {
 
     constructor() {
         super();
@@ -69,8 +69,8 @@ class New extends Component {
         return (
             <section id="section_main" className="flex-grow flex flex-col items-stretch overflow-y-auto no-scrollbar">
                 <TopNavigation left={<BackButton handleClick={e => this.props.navigate(-1)} />}
-                    center={<NavHeading name="New Message" />}
-                    right={<NewNextButton users={this.state.users} />} />
+                    center={<NavHeading name="Add People" />}
+                    right={<AddPeopleNextButton users={this.state.users} />} />
 
                 <main className="bg-white flex-grow flex flex-col items-stretch" role="main">
                     <div className="flex flex-col items-stretch border border-b border-triple219 overflow-x-hidden overflow-y-auto" style={{ maxHeight: '33vh' }}>
@@ -108,4 +108,4 @@ class New extends Component {
     }
 }
 
-export default WithRouter(New);
+export default WithRouter(AddPeople);

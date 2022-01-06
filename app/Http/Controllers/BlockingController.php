@@ -45,4 +45,9 @@ class BlockingController extends Controller
 
         return back()->with('success', 'Unblocked');
     }
+
+    public function isBlocking(User $user)
+    {
+        return response()->json(['result' => Auth::user()->isBlocking($user)]);
+    }
 }

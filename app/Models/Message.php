@@ -40,6 +40,10 @@ use function Illuminate\Events\queueable;
  * @method static \Illuminate\Database\Eloquent\Builder|Message whereContentType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Message image()
  * @method static \Illuminate\Database\Eloquent\Builder|Message like()
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Participant[] $likedByParticipants
+ * @property-read int|null $liked_by_participants_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ParticipantLike[] $likes
+ * @property-read int|null $likes_count
  */
 class Message extends Model
 {

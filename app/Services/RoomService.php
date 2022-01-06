@@ -34,6 +34,7 @@ class RoomService
         $room = $this->findSoloRoom($authuser);
         if (is_null($room)) {
             $room = $authuser->rooms()->create(['type' => 'solo']);
+            $room->participants->first()->update(['is_admin' => true]);
         }
         return $room;
     }
@@ -43,6 +44,7 @@ class RoomService
         $room = $this->findDirectRoom($authuser, $user);
         if (is_null($room)) {
             $room = $authuser->rooms()->create(['type' => 'direct']);
+            $room->participants->first()->update(['is_admin' => true]);
             $room->participants()->create(['user_id' => $user->id]);
         }
         return $room;
@@ -53,9 +55,18 @@ class RoomService
         $room = $this->findGroupRoom(...[$authUser, ...$users]);
         if (is_null($room)) {
             $room = $authUser->rooms()->create(['type' => 'group']);
+            $room->participants->first()->update(['is_admin' => true]);
             foreach ($users as $user) {
-                $room->participants()->create(['user_id' => $user->id]);
+                $room->participants()->firstOrCreate(['user_id' => $user->id]);
             }
+        }
+        return $room;
+    }
+
+    public function addParticipantsToGroupRoom(Room $room, User|int ...$users): Room
+    {
+        foreach ($users as $user) {
+            $room->participants()->firstOrCreate(['user_id' => is_int($user) ? $user : $user->id]);
         }
         return $room;
     }

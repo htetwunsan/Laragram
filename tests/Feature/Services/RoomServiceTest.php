@@ -79,6 +79,7 @@ class RoomServiceTest extends TestCase
         self::assertInstanceOf(Room::class, $room);
         self::assertTrue($room->isSolo);
         self::assertCount(1, $room->participants);
+        self::assertTrue($room->participants->first()->is_admin);
         self::assertTrue($user->is($room->participants->first()->user));
         self::assertTrue($room->is($this->service->firstOrCreateSoloRoom($user)));
     }
@@ -94,6 +95,7 @@ class RoomServiceTest extends TestCase
         self::assertInstanceOf(Room::class, $room);
         self::assertTrue($room->isDirect);
         self::assertEquals(2, $room->participants()->count());
+        self::assertTrue($room->participants->first()->is_admin);
         self::assertTrue($room->participants()->with('user')->get()->pluck('user')
             ->diff($users)
             ->isEmpty());
@@ -111,6 +113,7 @@ class RoomServiceTest extends TestCase
         self::assertInstanceOf(Room::class, $room);
         self::assertTrue($room->isGroup);
         self::assertEquals(3, $room->participants()->count());
+        self::assertTrue($room->participants->first()->is_admin);
         self::assertTrue($room->participants()->with('user')->get()->pluck('user')
             ->diff($users)
             ->isEmpty());

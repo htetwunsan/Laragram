@@ -43,7 +43,7 @@ class Room extends Model
 {
     use HasFactory, FormattedTimestamps;
 
-    protected $fillable = ['type'];
+    protected $fillable = ['type', 'name'];
 
     protected $appends = ['formatted_created_at', 'formatted_updated_at'];
 
@@ -59,12 +59,17 @@ class Room extends Model
         // return $this->belongsToMany(Message::class, Participant::class, 'room_id', 'id', 'id', 'participant_id');
     }
 
-    public function latestMessage()
+    // public function latestMessage()
+    // {
+    //     return $this->hasOne(Message::class)->ofMany([
+    //         'created_at' => 'max',
+    //         'id' => 'max'
+    //     ]);
+    // }
+
+    public function latestMessageOfParticipant(Participant $participant)
     {
-        return $this->hasOne(Message::class)->ofMany([
-            'created_at' => 'max',
-            'id' => 'max'
-        ]);
+        return $participant->roomMessagesNotMineNotDeleted()->latest()->latest('id')->with('participant')->first();
     }
 
     public function scopeSolo($query)

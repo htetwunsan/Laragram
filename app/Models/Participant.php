@@ -51,18 +51,44 @@ use Illuminate\Http\UploadedFile;
  * @property-read int|null $room_messages_not_mine_not_deleted_count
  * @property string|null $room_muted_at
  * @method static \Illuminate\Database\Eloquent\Builder|Participant whereRoomMutedAt($value)
+ * @property bool $is_admin
+ * @method static \Illuminate\Database\Eloquent\Builder|Participant admin()
+ * @method static \Illuminate\Database\Eloquent\Builder|Participant whereIsAdmin($value)
  */
 class Participant extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'room_id', 'room_deleted_at', 'room_muted_at'];
+    protected $fillable = ['user_id', 'room_id', 'room_deleted_at', 'room_muted_at', 'is_admin'];
 
     protected $with = ['user'];
+
+    protected static function booted()
+    {
+        static::created(function (Participant $participant) {
+            if (is_null($participant->room->name)) {
+                $participant->room->name = $participant->room->participants->pluck('user.name')->join(', ', ' and ');
+                $participant->room->save();
+            }
+            $participant->deleteMessages($participant->roomMessagesNotDeleted);
+        });
+
+        static::deleting(function (Participant $participant) {
+            $participant->deleteMessages($participant->roomMessagesNotDeleted);
+            if ($participant->otherParticipants()->admin()->count() <= 0) {
+                $participant->otherParticipants()->first()->update(['is_admin' => true]);
+            }
+        });
+    }
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function otherParticipants()
+    {
+        return $this->room->participants()->whereNotIn('id', [$this->id]);
     }
 
     public function room()
@@ -86,9 +112,7 @@ class Participant extends Model
 
     public function deleteRoom()
     {
-        $this->roomMessagesNotDeleted->each(function ($message) {
-            $this->deleteMessage($message);
-        });
+        $this->deleteMessages($this->roomMessagesNotDeleted);
         $this->room_deleted_at = $this->freshTimestamp();
         return $this->save();
     }
@@ -171,25 +195,28 @@ class Participant extends Model
     public function roomMessagesNotMineNotDeleted()
     {
         $notIn = $this->deletedMessages()->get('message_id');
-        return $this->roomMessages()
-            ->whereNotIn('participant_id', [$this->id])
-            ->whereNotIn('id', $notIn);
+        return $this->roomMessages()->where(function ($query) use ($notIn) {
+            $query->whereNotIn('participant_id', [$this->id]);
+            $query->whereNotIn('id', $notIn);
+        });
     }
 
     public function roomMessagesNotMineNotSeen()
     {
         $notIn = $this->seenMessages()->get('message_id');
-        return $this->roomMessages()
-            ->whereNotIn('participant_id', [$this->id])
-            ->whereNotIn('id', $notIn);
+        return $this->roomMessages()->where(function ($query) use ($notIn) {
+            $query->whereNotIn('participant_id', [$this->id]);
+            $query->whereNotIn('id', $notIn);
+        });
     }
 
     public function roomMessagesNotMineNotDeletedNotSeen()
     {
         $notIn = $this->deletedMessages()->get('message_id')->merge($this->seenMessages()->get('message_id'));
-        return $this->roomMessages()
-            ->whereNotIn('participant_id', [$this->id])
-            ->whereNotIn('id', $notIn);
+        return $this->roomMessages()->where(function ($query) use ($notIn) {
+            $query->whereNotIn('participant_id', [$this->id]);
+            $query->whereNotIn('id', $notIn);
+        });
     }
 
     public function deletedRoomMessages()
@@ -199,10 +226,15 @@ class Participant extends Model
 
     public function createMessage(string $content, string $contentType = 'text')
     {
-        $this->room->participants->each(function ($participant) {
-            $participant->restoreRoom();
+        $message = $this->messages()->create(['content' => $content, 'content_type' => $contentType]);
+        $this->room->participants->each(function ($participant) use ($message) {
+            if ($this->user->isBlocking($participant->user) || $this->user->isBlockedBy($participant->user)) {
+                $participant->deleteMessage($message);
+            } else {
+                $participant->restoreRoom();
+            }
         });
-        return $this->messages()->create(['content' => $content, 'content_type' => $contentType]);
+        return $message;
     }
 
     public function createTextMessage(string $content)
@@ -230,6 +262,13 @@ class Participant extends Model
         return $this->deletedMessages()->firstOrCreate(['message_id' => $message->id]);
     }
 
+    public function deleteMessages(Collection $messages)
+    {
+        $messages->each(function (Message $message) {
+            $this->deleteMessage($message);
+        });
+    }
+
     public function likeMessage(Message $message)
     {
         return $message->likeAs($this);
@@ -238,5 +277,10 @@ class Participant extends Model
     public function unlikeMessage(Message $message)
     {
         return $message->unlikeAs($this);
+    }
+
+    public function scopeAdmin($query)
+    {
+        return $query->whereIsAdmin(true);
     }
 }

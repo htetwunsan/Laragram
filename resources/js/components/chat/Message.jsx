@@ -3,7 +3,7 @@ import { AppContext } from "./AppContext";
 import ProfileImage from '../ProfileImage';
 import clsx from 'clsx';
 
-export default function Message({ message, handleClickLikeMessage, showMessageLikedDialog }) {
+export default function Message({ message, room, index, handleClickLikeMessage, showMessageLikedParticipantsDialog }) {
 
     const context = useContext(AppContext);
 
@@ -13,7 +13,7 @@ export default function Message({ message, handleClickLikeMessage, showMessageLi
 
     const handleClick = e => {
         e.stopPropagation();
-        showMessageLikedDialog(message);
+        showMessageLikedParticipantsDialog(message);
     };
 
     const renderLike = () => {
@@ -43,9 +43,22 @@ export default function Message({ message, handleClickLikeMessage, showMessageLi
         </>;
     };
 
+    if (message.content_type == 'date' || message.id < 0) {
+        return <>
+            <div className="flex flex-col items-stretch">
+                <div className="flex flex-col items-stretch pt-3 pb-6">
+                    <div className="text-xs text-triple142 text-center leading-18px -mt-0.5"
+                        style={{ marginBottom: '-3px' }}>
+                        {message.content}
+                    </div>
+                </div>
+            </div>
+        </>;
+    }
+
     return <>
 
-        <div className={clsx({ 'self-end': isMe() }, { 'self-start': !isMe() }, 'flex', 'flex-col', 'items-stretch')} style={{ maxWidth: '60%' }}>
+        <div className={clsx({ 'self-end': isMe() }, { 'self-start': !isMe() }, 'flex', 'flex-col', 'items-stretch')} style={{ maxWidth: '70%' }}>
 
             <div className={clsx('flex', 'flex-col', 'items-stretch', 'pb-2', 'relative')} role="button"
                 onDoubleClick={e => handleClickLikeMessage(e, message)}>
@@ -87,5 +100,15 @@ export default function Message({ message, handleClickLikeMessage, showMessageLi
                 </div>
             </div>
         </div>
+        {
+            (room.type == 'group' && !isMe() && index == 0) &&
+            < div className="self-start flex flex-col items-stretch" style={{ maxWidth: '70%' }}>
+                <div className="flex flex-col items-stretch mt-4 mb-2 ml-12">
+                    <span className="block text-xs text-triple142 leading-4" style={{ marginTop: '-2px', marginBottom: '-3px' }}>
+                        {message.participant.user.username}
+                    </span>
+                </div>
+            </div>
+        }
     </>;
 }

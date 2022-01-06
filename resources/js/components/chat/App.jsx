@@ -6,6 +6,7 @@ import Chats from "./Chats";
 import New from "./New";
 import { AppContext } from "./AppContext";
 import ChatDetails from "./ChatDetails";
+import AddPeople from "./AddPeople";
 
 class App extends React.Component {
 
@@ -29,6 +30,7 @@ class App extends React.Component {
         if (!this.state.authUser) {
             return <></>;
         }
+        // TODO - before upload change Navigate to Chats
         return <>
             <AppContext.Provider value={this.state}>
                 <Routes>
@@ -38,6 +40,7 @@ class App extends React.Component {
                         <Route path="new" element={<New />} />
                         <Route path="r/:roomId" element={<Chat />} />
                         <Route path="r/:roomId/details" element={<ChatDetails />} />
+                        <Route path="r/:roomId/details/add" element={<AddPeople />} />
                     </Route>
                 </Routes>
             </AppContext.Provider>

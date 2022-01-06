@@ -35,8 +35,12 @@ class RoomUpdated implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return $this->room->participants->map(function (Participant $participant) {
-            return new PrivateChannel('users.' . $participant->user_id . '.rooms');
-        })->toArray();
+        $channels = [
+            new PresenceChannel('rooms.' . $this->room->id),
+            ...$this->room->participants->map(function (Participant $participant) {
+                return new PrivateChannel('users.' . $participant->user_id . '.rooms');
+            })->toArray()
+        ];
+        return $channels;
     }
 }
