@@ -7,6 +7,7 @@ use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvi
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
+use URL;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -38,6 +39,10 @@ class RouteServiceProvider extends ServiceProvider
         $this->configureRateLimiting();
 
         $this->routes(function () {
+            if (env('APP_ENV') === 'production') {
+                URL::forceScheme('https');
+            }
+
             Route::prefix('api')
                 ->middleware('api')
                 ->namespace($this->namespace)
