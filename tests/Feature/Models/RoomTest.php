@@ -39,7 +39,7 @@ class RoomTest extends TestCase
 
         $latestMessage = $directRoom->latestMessageOfParticipant($directParticipants[0]);
         self::assertEquals(
-            $messages1[2],
+            $messages1[2]->load('participant'),
             $latestMessage
         );
     }

@@ -24,14 +24,18 @@ class BlockingControllerTest extends TestCase
         $response = $this->actingAs($user)
             ->post(route('user.block', ['user' => $user]));
 
-        $response->assertSessionHas('error', 'Ensure user is not auth user failed.');
+        $response->assertSessionHasErrors(['nonField']);
 
 
         $response = $this->actingAs($user)
             ->withHeader('accept', 'application/json')
             ->post(route('user.block', ['user' => $user]));
 
-        $response->assertExactJson(['error' => 'Ensure user is not auth user failed.']);
-    }
 
+        $response->assertJson([
+            'errors' => [
+                'nonField' => ['You cannot block yourself.']
+            ]
+        ]);
+    }
 }

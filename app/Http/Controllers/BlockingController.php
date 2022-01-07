@@ -12,14 +12,16 @@ class BlockingController extends Controller
 {
     public function block(User $user, Request $request)
     {
-        try {
-            Auth::user()->block($user);
-        } catch (Exception $e) {
-            if ($request->expectsJson()) {
-                return response()->json(['error' => $e->getMessage()], 400);
-            }
-            return back()->with('error', $e->getMessage());
-        }
+        // try {
+        //     Auth::user()->block($user);
+        // } catch (Exception $e) {
+        //     if ($request->expectsJson()) {
+        //         return response()->json(['error' => $e->getMessage()], 400);
+        //     }
+        //     return back()->with('error', $e->getMessage());
+        // }
+
+        Auth::user()->block($user);
 
         if ($request->expectsJson()) {
             return response()->json(['success' => 'You have blocked ' . $user->username . '.']);
@@ -30,14 +32,16 @@ class BlockingController extends Controller
 
     public function unblock(User $user, Request $request)
     {
-        try {
-            Auth::user()->unblock($user);
-        } catch (Exception $e) {
-            if ($request->expectsJson()) {
-                return response()->json(['error' => $e->getMessage()], 400);
-            }
-            return back()->with('error', $e->getMessage());
-        }
+        // try {
+        //     Auth::user()->unblock($user);
+        // } catch (Exception $e) {
+        //     if ($request->expectsJson()) {
+        //         return response()->json(['error' => $e->getMessage()], 400);
+        //     }
+        //     return back()->with('error', $e->getMessage());
+        // }
+
+        Auth::user()->unblock($user);
 
         if ($request->expectsJson()) {
             return response()->json(['success' => 'You have unblocked ' . $user->username . '.']);

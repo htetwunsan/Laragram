@@ -18,7 +18,7 @@ use App\Notifications\LikeNotification;
 use DB;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use InvalidArgumentException;
+use Illuminate\Validation\ValidationException;
 use Tests\TestCase;
 
 class UserTest extends TestCase
@@ -251,7 +251,7 @@ class UserTest extends TestCase
             ->where('data->id', $f->id)->get());
         self::assertEquals($f, Following::find($f->id));
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(ValidationException::class);
 
         $f = $first->follow($first);
 
@@ -292,7 +292,7 @@ class UserTest extends TestCase
             ->where('data->id', $f->id)->get());
         self::assertNull(Following::find($f->id));
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(ValidationException::class);
 
         $f = $this->follow($first, $first);
 
@@ -313,25 +313,25 @@ class UserTest extends TestCase
 
     // TODO need to test unfollowEachOther
 
-//    public function test_user_can_toggle_follow_user()
-//    {
-//        $this->seedTestData();
-//
-//        $first = User::find(1);
-//        $second = User::find(2);
-//
-//        $result = $first->toggleFollow($second);
-//
-//        self::assertEquals([$second->id], $result['attached']);
-//        self::assertEquals(1, Following::whereFollowerId($first->id)
-//            ->whereFollowingId($second->id)->count());
-//
-//        $result = $first->toggleFollow($second);
-//
-//        self::assertEquals([$second->id], $result['detached']);
-//        self::assertEquals(0, Following::whereFollowerId($first->id)
-//            ->whereFollowingId($second->id)->count());
-//    }
+    //    public function test_user_can_toggle_follow_user()
+    //    {
+    //        $this->seedTestData();
+    //
+    //        $first = User::find(1);
+    //        $second = User::find(2);
+    //
+    //        $result = $first->toggleFollow($second);
+    //
+    //        self::assertEquals([$second->id], $result['attached']);
+    //        self::assertEquals(1, Following::whereFollowerId($first->id)
+    //            ->whereFollowingId($second->id)->count());
+    //
+    //        $result = $first->toggleFollow($second);
+    //
+    //        self::assertEquals([$second->id], $result['detached']);
+    //        self::assertEquals(0, Following::whereFollowerId($first->id)
+    //            ->whereFollowingId($second->id)->count());
+    //    }
 
     public function test_likes_return_correct_relation()
     {
@@ -438,7 +438,6 @@ class UserTest extends TestCase
             ->where('type', LikeNotification::class)
             ->where('data->id', $like->id)
             ->get());
-
     }
 
     function test_unlike_post_delete_correct_relation()
@@ -466,7 +465,7 @@ class UserTest extends TestCase
 
         $like = $user->unlikePost($firstPost);
 
-        self::assertInstanceOf(Like::Class, $like);
+        self::assertInstanceOf(Like::class, $like);
         self::assertNull(Like::find($like->id));
         self::assertCount(0, $like->likeable->user->notifications()
             ->where('type', LikeNotification::class)
@@ -479,7 +478,7 @@ class UserTest extends TestCase
 
         $like = $user->unlikePost($secondPost);
 
-        self::assertInstanceOf(Like::Class, $like);
+        self::assertInstanceOf(Like::class, $like);
         self::assertNull(Like::find($like->id));
         self::assertCount(0, $like->likeable->user->notifications()
             ->where('type', LikeNotification::class)
@@ -586,7 +585,7 @@ class UserTest extends TestCase
 
         $like = $user->unlikeComment($firstComment);
 
-        self::assertInstanceOf(Like::Class, $like);
+        self::assertInstanceOf(Like::class, $like);
         self::assertNull(Like::find($like->id));
         self::assertCount(0, $like->likeable->user->notifications()
             ->where('type', LikeNotification::class)
@@ -599,7 +598,7 @@ class UserTest extends TestCase
 
         $like = $user->unlikeComment($secondComment);
 
-        self::assertInstanceOf(Like::Class, $like);
+        self::assertInstanceOf(Like::class, $like);
         self::assertNull(Like::find($like->id));
         self::assertCount(0, $like->likeable->user->notifications()
             ->where('type', LikeNotification::class)
@@ -1136,7 +1135,7 @@ class UserTest extends TestCase
 
         self::assertTrue($b->is(Blocking::find($b->id)));
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(ValidationException::class);
 
         $b = $first->block($first);
 
@@ -1165,7 +1164,7 @@ class UserTest extends TestCase
         self::assertInstanceOf(Blocking::class, $b);
         self::assertNull(Blocking::find($b->id));
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(ValidationException::class);
 
         $b = $this->block($first, $first);
 
@@ -1178,18 +1177,3 @@ class UserTest extends TestCase
             ->whereBlockingId($second->id)->count());
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

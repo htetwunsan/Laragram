@@ -9,7 +9,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-class FakeFacebookUser extends \Laravel\Socialite\Two\User {
+class FakeFacebookUser extends \Laravel\Socialite\Two\User
+{
 
     public function __construct($id, $name, $email, $avatar, $token, $refreshToken)
     {
@@ -26,7 +27,8 @@ class FacebookLoginControllerTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
 
-    public function getFakeFacebookUser() {
+    public function getFakeFacebookUser()
+    {
         return new FakeFacebookUser(
             $this->faker->uuid(),
             $this->faker->name(),
@@ -37,14 +39,14 @@ class FacebookLoginControllerTest extends TestCase
         );
     }
 
-    public function assertFacebookUserEqualsUser($facebookUser, $user) {
+    public function assertFacebookUserEqualsUser($facebookUser, $user)
+    {
         self::assertEquals($facebookUser->id, $user->facebook_id);
         self::assertEquals($facebookUser->name, $user->name);
         self::assertEquals($facebookUser->email, $user->email);
         self::assertEquals($facebookUser->token, $user->facebook_token);
         self::assertEquals($facebookUser->refreshToken, $user->facebook_refresh_token);
         self::assertNotEmpty($user->username);
-        dump($user->username);
     }
 
     public function test_process_user_return_correct_user()
@@ -95,7 +97,8 @@ class FacebookLoginControllerTest extends TestCase
         $this->assertFacebookUserEqualsUser($fbUser, $user);
     }
 
-    public function test_process_user_throw_exception_when_email_duplicates(){
+    public function test_process_user_throw_exception_when_email_duplicates()
+    {
         $user = User::factory()->createOne(['email' => 'test@gmail.com']);
 
         $controller = new FacebookLoginController;
@@ -124,5 +127,4 @@ class FacebookLoginControllerTest extends TestCase
 
         $this->assertFacebookUserEqualsUser($fbUser, $user);
     }
-
 }

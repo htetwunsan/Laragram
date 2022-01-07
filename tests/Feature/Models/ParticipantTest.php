@@ -47,9 +47,9 @@ class ParticipantTest extends TestCase
             ])->pluck('id')
         );
 
-        $this->soloRoom->fresh();
-        $this->directRoom->fresh();
-        $this->groupRoom->fresh();
+        $this->soloRoom = $this->soloRoom->fresh();
+        $this->directRoom = $this->directRoom->fresh();
+        $this->groupRoom = $this->groupRoom->fresh();
     }
 
     public function test_user_return_correct_relation()

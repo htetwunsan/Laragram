@@ -38,7 +38,7 @@ class Blocking extends Model
     {
         static::creating(function (Blocking $blocking) {
             if ($blocking->blocker_id === $blocking->blocking_id) {
-                throw ValidationException::withMessages(['You cannot block yourself.']);
+                throw ValidationException::withMessages(['nonField' => 'You cannot block yourself.']);
             }
         });
 
@@ -48,7 +48,7 @@ class Blocking extends Model
 
         static::deleting(function (Blocking $blocking) {
             if ($blocking->blocker_id === $blocking->blocking_id) {
-                throw ValidationException::withMessages(['You cannot unblock yourself.']);
+                throw ValidationException::withMessages(['error' => 'You cannot unblock yourself.']);
             }
         });
     }
