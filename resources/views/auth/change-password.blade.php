@@ -34,7 +34,7 @@
                                 <div style="width: 38px; height: 38px">
                                     <x-profile-image class="w-full h-full rounded-full" title="Profile photo"
                                         alt="Profile photo">
-                                        {{ $user->profile_image }}
+                                        {{ auth()->user()->profile_image }}
                                     </x-profile-image>
                                 </div>
                             </div>
