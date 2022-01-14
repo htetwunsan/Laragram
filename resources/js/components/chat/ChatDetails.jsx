@@ -93,7 +93,7 @@ export default function ChatDetails() {
                 return p;
             });
             setRoom({ ...room });
-        })
+        });
     };
 
     const handleClickRemoveFromGroup = (e, participant) => {
@@ -219,10 +219,13 @@ export default function ChatDetails() {
                                         <h4 className="text-base text-triple38 font-semibold leading-6 -my-1.5">Members</h4>
                                     </div>
 
-                                    <Link className="text-sm text-fb_blue text-center font-semibold leading-18px"
-                                        to="add">
-                                        Add People
-                                    </Link>
+                                    {
+                                        room.type == 'group' &&
+                                        <Link className="text-sm text-fb_blue text-center font-semibold leading-18px"
+                                            to="add">
+                                            Add People
+                                        </Link>
+                                    }
                                 </div>
 
                                 {
