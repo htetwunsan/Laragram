@@ -7,33 +7,27 @@
                     class="mx-auto absolute top-0 left-0 right-0 flex flex-col items-stretch border-b border-solid border-triple219 z-10 bg-white">
                     <div class="w-full flex flex-row items-center h-11 px-4">
                         <label class="flex-grow flex relative">
-                            <input
-                                id="input_search"
+                            <input id="input_search"
                                 class="flex-grow text-sm text-triple38 leading-5 placeholder-transparent whitespace-nowrap pr-3 py-1 border border-triple219 rounded-md focus:ring-0 focus:border-triple219"
-                                style="padding-left: 22px;"
-                                autocapitalize="none"
-                                autocomplete="off"
-                                placeholder="Search"
-                                spellcheck="true"
-                                type="search"
-                                value="">
+                                style="padding-left: 22px;" autocapitalize="none" autocomplete="off"
+                                placeholder="Search" spellcheck="true" type="search" value="">
                             <div
                                 class="absolute top-0 left-1/2 flex flex-row items-center justify-center px-2 transform -translate-x-1/2 transition-all duration-150 ease-out">
                                 <span class="block search"></span>
                                 <span class="block text-sm text-triple142 text-center leading-7"
-                                      style="margin-left: 5px;">
+                                    style="margin-left: 5px;">
                                     Search
                                 </span>
                             </div>
                             <button id="btn_search_clear"
-                                    class="absolute top-0 right-0 bottom-0 flex items-center justify-center pr-1 hidden"
-                                    type="button">
+                                class="absolute top-0 right-0 bottom-0 flex items-center justify-center pr-1 hidden"
+                                type="button">
                                 <span class="block input-clear"></span>
                             </button>
                         </label>
                         <button id="btn_search_cancel"
-                                class="text-sm text-triple38 text-center font-semibold leading-18px ml-3 hidden"
-                                type="button">
+                            class="text-sm text-triple38 text-center font-semibold leading-18px ml-3 hidden"
+                            type="button">
                             Cancel
                         </button>
                     </div>
@@ -52,9 +46,9 @@
         </main>
     </section>
     @once
-        @push('scripts')
-            <script>
-                $(document).ready(function () {
+    @push('scripts')
+    <script>
+        $(document).ready(function () {
                     const $inputSearch = $('#input_search');
                     const $btnSearchClear = $('#btn_search_clear');
                     const $btnSearchCancel = $('#btn_search_cancel');
@@ -162,7 +156,7 @@
 
                     $divSearchResults.scroll(_.throttle(paginateSearch, 500));
                 });
-            </script>
-        @endpush
+    </script>
+    @endpush
     @endonce
 </x-base-layout>

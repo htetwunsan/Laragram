@@ -2,23 +2,21 @@
     <section id="section_main" class="bg-triple38 h-full flex flex-col items-stretch overflow-y-auto no-scrollbar">
         <!--header-->
         <nav class="flex flex-col items-stretch order-first z-50">
-            <header class="flex flex-col items-stretch px-2 pt-2"
-                    style="height: 72px">
+            <header class="flex flex-col items-stretch px-2 pt-2" style="height: 72px">
                 <!--indicators-->
                 <div class="flex items-center justify-center gap-0.5 mb-2" style="height: 2px">
                     @foreach($stories as $story)
-                        <div class="h-full flex-grow relative">
-                            <div class="h-full bg-white bg-opacity-35"></div>
-                            <div
-                                class="div_indicator h-full bg-white absolute left-0 top-0"></div>
-                        </div>
+                    <div class="h-full flex-grow relative">
+                        <div class="h-full bg-white bg-opacity-35"></div>
+                        <div class="div_indicator h-full bg-white absolute left-0 top-0"></div>
+                    </div>
                     @endforeach
                 </div>
 
                 <div class="flex items-center justify-between mx-2">
                     <div class="flex items-center justify-center">
                         <a class="flex items-center justify-center"
-                           href="{{ route('user.show', ['user' => $user->username]) }}">
+                            href="{{ route('user.show', ['user' => $user->username]) }}">
                             <div class="w-8 h-8">
                                 <x-profile-image class="w-full h-full rounded-full" alt="">
                                     {{ $user->profile_image }}
@@ -35,23 +33,22 @@
 
                         <div id="div_time">
                             @foreach($stories as $story)
-                                <time
-                                    class="text-sm text-white text-center text-opacity-60 {{ $loop->first ? 'block' : 'hidden' }}"
-                                    style="line-height: 17px"
-                                    datetime="{{ $story->created_at }}">
-                                    {{ $story->created_at->diffForHumans() }}
-                                </time>
+                            <time
+                                class="text-sm text-white text-center text-opacity-60 {{ $loop->first ? 'block' : 'hidden' }}"
+                                style="line-height: 17px" datetime="{{ $story->created_at }}">
+                                {{ $story->created_at->diffForHumans() }}
+                            </time>
                             @endforeach
                         </div>
                     </div>
 
                     <div class="flex items-center justify-center">
                         <button id="btn_close" class="p-2" type="button">
-                            <svg aria-label="Close" color="#ffffff" fill="#ffffff" height="24"
-                                 role="img" viewBox="0 0 48 48" width="24">
+                            <svg aria-label="Close" color="#ffffff" fill="#ffffff" height="24" role="img"
+                                viewBox="0 0 48 48" width="24">
                                 <path clip-rule="evenodd"
-                                      d="M41.1 9.1l-15 15L41 39c.6.6.6 1.5 0 2.1s-1.5.6-2.1 0L24 26.1l-14.9 15c-.6.6-1.5.6-2.1 0-.6-.6-.6-1.5 0-2.1l14.9-15-15-15c-.6-.6-.6-1.5 0-2.1s1.5-.6 2.1 0l15 15 15-15c.6-.6 1.5-.6 2.1 0 .6.6.6 1.6 0 2.2z"
-                                      fill-rule="evenodd">
+                                    d="M41.1 9.1l-15 15L41 39c.6.6.6 1.5 0 2.1s-1.5.6-2.1 0L24 26.1l-14.9 15c-.6.6-1.5.6-2.1 0-.6-.6-.6-1.5 0-2.1l14.9-15-15-15c-.6-.6-.6-1.5 0-2.1s1.5-.6 2.1 0l15 15 15-15c.6-.6 1.5-.6 2.1 0 .6.6.6 1.6 0 2.2z"
+                                    fill-rule="evenodd">
 
                                 </path>
                             </svg>
@@ -72,8 +69,8 @@
                             <footer class="flex flex-col items-stretch justify-end px-4 pb-2">
                                 <div class="flex items-center justify-end">
                                     <button class="p-2" type="button">
-                                        <svg aria-label="Direct" color="#dbdbdb" fill="#dbdbdb" height="24"
-                                             role="img" viewBox="0 0 48 48" width="24">
+                                        <svg aria-label="Direct" color="#dbdbdb" fill="#dbdbdb" height="24" role="img"
+                                            viewBox="0 0 48 48" width="24">
                                             <path
                                                 d="M47.8 3.8c-.3-.5-.8-.8-1.3-.8h-45C.9 3.1.3 3.5.1 4S0 5.2.4 5.7l15.9 15.6 5.5 22.6c.1.6.6 1 1.2 1.1h.2c.5 0 1-.3 1.3-.7l23.2-39c.4-.4.4-1 .1-1.5zM5.2 6.1h35.5L18 18.7 5.2 6.1zm18.7 33.6l-4.4-18.4L42.4 8.6 23.9 39.7z">
 
@@ -83,7 +80,7 @@
 
                                     <button id="btn_more_options" class="p-2" type="button">
                                         <svg aria-label="Menu" color="#ffffff" fill="#ffffff" height="24" role="img"
-                                             viewBox="0 0 24 24" width="24">
+                                            viewBox="0 0 24 24" width="24">
                                             <circle cx="12" cy="12" r="2.75"></circle>
                                             <circle cx="19.5" cy="12" r="2.75"></circle>
                                             <circle cx="4.5" cy="12" r="2.75"></circle>
@@ -100,36 +97,31 @@
         <!--main-->
         <main class="flex-grow flex flex-col items-stretch" role="main">
             <div class="flex-grow flex items-center justify-center relative">
-                <div id="div_carousel"
-                     class="flex flex-row items-center overflow-hidden no-scrollbar"
-                     style="scroll-snap-type: x mandatory;">
+                <div id="div_carousel" class="flex flex-row items-center overflow-hidden no-scrollbar"
+                    style="scroll-snap-type: x mandatory;">
                     @foreach($stories as $story)
-                        <div class="w-full h-full flex-none flex items-center justify-center"
-                             style="scroll-snap-align: center">
-                            <x-story.image class="w-full h-full sm:w-4/5 object-cover" alt="">
-                                {{ $story->image }}
-                            </x-story.image>
-                        </div>
+                    <div class="w-full h-full flex-none flex items-center justify-center"
+                        style="scroll-snap-align: center">
+                        <x-story.image class="w-full h-full sm:w-4/5 object-cover" alt="">
+                            {{ $story->image }}
+                        </x-story.image>
+                    </div>
                     @endforeach
                 </div>
 
 
                 <div class="flex items-center justify-center absolute inset-0 opacity-0">
-                    <button id="btn_prev"
-                            class="bg-purple-500 w-1/5 h-full opacity-0 cursor-default z-10"
-                            type="button">
+                    <button id="btn_prev" class="bg-purple-500 w-1/5 h-full opacity-0 cursor-default z-10"
+                        type="button">
                     </button>
 
-                    <button id="btn_pause_resume"
-                            class="bg-pink-500 w-3/5 h-full opacity-0 cursor-default z-10"
-                            type="button">
+                    <button id="btn_pause_resume" class="bg-pink-500 w-3/5 h-full opacity-0 cursor-default z-10"
+                        type="button">
 
                     </button>
 
-                    <button id="btn_next"
-                            class="bg-yellow-500 w-1/5 h-full opacity-0 cursor-default z-10"
-                            style="top: 72px; bottom: 72px; width: 20%"
-                            type="button">
+                    <button id="btn_next" class="bg-yellow-500 w-1/5 h-full opacity-0 cursor-default z-10"
+                        style="top: 72px; bottom: 72px; width: 20%" type="button">
                     </button>
                 </div>
             </div>
@@ -140,9 +132,9 @@
         @component('components.success', ['message' => session('success')])@endcomponent
     </section>
     @once
-        @push('scripts')
-            <script>
-                var appData = {
+    @push('scripts')
+    <script>
+        var appData = {
                     stories: @json($stories),
                     authUser: @json(auth()->user())
                 };
@@ -270,7 +262,7 @@
                     toggleIndicator();
                     toggleTime();
                 });
-            </script>
-        @endpush
+    </script>
+    @endpush
     @endonce
 </x-base-layout>

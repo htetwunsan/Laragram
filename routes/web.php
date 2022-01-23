@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\BlockingController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FollowingController;
@@ -24,6 +25,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 require __DIR__ . '/auth.php';
+
+require __DIR__ . '/admin.php';
 
 
 if (env('app_debug')) {

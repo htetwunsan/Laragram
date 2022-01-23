@@ -1,5 +1,4 @@
-<div id="followings_container"
-     class="flex flex-col items-stretch">
+<div id="followings_container" class="flex flex-col items-stretch">
     @component('components.user.followings', ['followings' => $followings])@endcomponent
     @component('components.post.confirm-unfollow-dialog')@endcomponent
 </div>
@@ -10,7 +9,7 @@
                 followings: @json($followings->items())
             };
 
-            $(document).ready(function () {
+            $(document).ready(function() {
                 const $followingsContainer = $('#followings_container');
 
                 const scrollOffset = 500;
@@ -20,7 +19,7 @@
                 function initEvents() {
                     const $divFollowings = $followingsContainer.find('.div_following');
 
-                    $divFollowings.each(function (index) {
+                    $divFollowings.each(function(index) {
                         const $btnFollow = $(this).find('.btn_follow');
                         const $btnUnfollow = $(this).find('.btn_unfollow');
 
@@ -49,14 +48,14 @@
                                     $btnFollow.find('span').removeClass('invisible');
                                     $btnFollow.find('svg').addClass('hidden');
                                 })
-                                .finally(function () {
+                                .finally(function() {
                                     followingInProgress = false;
                                 });
                         }
 
                         function handleUnfollow() {
                             const user = appData.followings[index];
-                            showConfirmUnfollowDialog(user, function (response) {
+                            showConfirmUnfollowDialog(user, function(response) {
                                 $btnUnfollow.addClass('hidden');
                                 $btnFollow.removeClass('hidden');
                             });
@@ -80,12 +79,12 @@
                             $followingsContainer.append(response.data.html);
                             initEvents();
                         })
-                        .finally(function () {
+                        .finally(function() {
                             isFetching = false;
                         });
                 }
 
-                $(window).scroll(_.throttle(function () {
+                $(window).scroll(_.throttle(function() {
                     if ($(window).scrollTop() + $(window).height() + scrollOffset >= $(document).height()) {
                         loadMoreFollowings();
                     }
