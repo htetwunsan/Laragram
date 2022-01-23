@@ -19,7 +19,6 @@ class IndexService
         foreach (Schema::getColumnListing($modelNamePluralLowercase) as $column) {
             $types[$column] = Schema::getColumnType($modelNamePluralLowercase, $column);
         }
-        DB::table('users')->get();
         $query = $class::query();
 
         if ($request->filters) {
