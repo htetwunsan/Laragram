@@ -15,7 +15,6 @@ use App\Models\View;
 use App\Notifications\CommentNotification;
 use App\Notifications\FollowNotification;
 use App\Notifications\LikeNotification;
-use DB;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Validation\ValidationException;
@@ -103,6 +102,13 @@ class UserTest extends TestCase
             'blocker_id' => $blocker->id,
             'blocking_id' => $blocking->id
         ]);
+    }
+
+    public function test_create_validation()
+    {
+        $this->seedTestData();
+
+        self::assertTrue(true);
     }
 
     public function test_followings_return_correct_relation()

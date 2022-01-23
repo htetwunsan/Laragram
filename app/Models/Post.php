@@ -46,7 +46,7 @@ class Post extends Model
 {
     use HasFactory, FormattedTimestamps;
 
-    protected $fillable = ['caption'];
+    protected $fillable = ['user_id', 'caption'];
 
     protected static function booted()
     {

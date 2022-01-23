@@ -91,9 +91,9 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'caption' => ['nullable'],
+            'caption' => ['nullable', 'string'],
             'post_image' => ['required', 'image'],
-            'alternate_text' => ['nullable', 'max:255']
+            'alternate_text' => ['nullable', 'string', 'max:255']
         ]);
 
         Auth::user()->createPost(

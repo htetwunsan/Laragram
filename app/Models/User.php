@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Traits\FormattedTimestamps;
+use Carbon\Carbon;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Collection;
@@ -12,8 +14,10 @@ use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules;
 use Str;
-
+use Validator;
 
 /**
  * App\Models\User
@@ -101,10 +105,12 @@ use Str;
  * @property-read int|null $deleted_rooms_count
  * @property-read Collection|\App\Models\Room[] $notDeletedRooms
  * @property-read int|null $not_deleted_rooms_count
+ * @property bool $is_admin
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereIsAdmin($value)
  */
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, FormattedTimestamps;
 
     /**
      * The attributes that are mass assignable.
@@ -122,6 +128,7 @@ class User extends Authenticatable
         'bio',
         'phone',
         'gender',
+        'is_admin',
         'facebook_id',
         'facebook_token',
         'facebook_refresh_token'
@@ -158,21 +165,16 @@ class User extends Authenticatable
                 if (User::whereUsername($username)->exists()) {
                     $username .= now()->microsecond;
                 }
-
-                $user->username = $username;
             } else if (!empty($user->name)) {
                 $username = $user->name;
 
                 if (User::whereUsername($username)->exists()) {
                     $username .= now()->microsecond;
                 }
-
-                $user->username = $username;
             } else {
                 $username = (string) Str::uuid();
-
-                $user->username = $username;
             }
+            $user->username = $username;
         });
 
         static::deleted(function (User $user) {
