@@ -12,6 +12,7 @@
         "ext-pdo": "*",
         "beyondcode/laravel-websockets": "^1.12",
         "cloudinary-labs/cloudinary-laravel": "^1.0",
+        "doctrine/dbal": "^3.3",
         "fakerphp/faker": "^1.9.1",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
