@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
         // create users;
         $hws = User::whereEmail('htetwunsan2000@gmail.com')->first();
         if (is_null($hws)) {
-            $hws = User::factory(['email' => 'htetwunsan2000@gmail.com', 'name' => 'Htet Wun San'])->createOne();
+            $hws = User::factory(['email' => 'htetwunsan2000@gmail.com', 'name' => 'Htet Wun San', 'is_admin' => true])->createOne();
         }
         User::factory(20)
             ->addImage()

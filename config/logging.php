@@ -53,21 +53,16 @@ return [
             'channels' => ['errorlog', 'single'],
             'ignore_exceptions' => false,
         ],
-        //        'stack' => [
-        //            'driver' => 'stack',
-        //            'channels' => ['single'],
-        //            'ignore_exceptions' => false,
-        //        ],
 
         'single' => [
             'driver' => 'single',
-            'path' => storage_path('logs/laravel.log'),
+            'path' => storage_path('logs/' . date("Y") . '/' . date("m") . '/' . date("d") . '/' . 'laravel.log'),
             'level' => env('LOG_LEVEL', 'debug'),
         ],
 
         'daily' => [
             'driver' => 'daily',
-            'path' => storage_path('logs/laravel.log'),
+            'path' => storage_path('logs/' . date("Y") . '/' . date("m") . '/' . date("d") . '/' . 'laravel.log'),
             'level' => env('LOG_LEVEL', 'debug'),
             'days' => 14,
         ],
@@ -116,7 +111,7 @@ return [
         ],
 
         'emergency' => [
-            'path' => storage_path('logs/laravel.log'),
+            'path' => storage_path('logs/' . date("Y") . '/' . date("m") . '/' . date("d") . '/' . 'laravel.log'),
         ],
     ],
 

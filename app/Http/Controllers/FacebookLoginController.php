@@ -10,6 +10,7 @@ use Hash;
 use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\InvalidStateException;
+use Log;
 use Str;
 
 class FacebookLoginController extends Controller
@@ -25,8 +26,8 @@ class FacebookLoginController extends Controller
     {
         try {
             $facebookUser = Socialite::driver('facebook')->user();
-        }
-        catch (InvalidStateException $e) {
+        } catch (InvalidStateException $e) {
+            Log::debug($e);
             return redirect()->route('login')
                 ->withErrors(['nonField' => 'Please login again from here.']);
         }
@@ -44,7 +45,8 @@ class FacebookLoginController extends Controller
         return redirect(RouteServiceProvider::HOME);
     }
 
-    public function processUser($facebookUser) {
+    public function processUser($facebookUser)
+    {
         $user = User::whereFacebookId($facebookUser->id)->first();
 
         if ($user) {
@@ -53,7 +55,7 @@ class FacebookLoginController extends Controller
                 'facebook_refresh_token' => $facebookUser->refreshToken
             ]);
         } else {
-            if (! is_null($facebookUser->email) && User::whereEmail($facebookUser->email)->exists()) {
+            if (!is_null($facebookUser->email) && User::whereEmail($facebookUser->email)->exists()) {
                 throw new Exception('Account may be already created.');
             }
             $user = User::create([

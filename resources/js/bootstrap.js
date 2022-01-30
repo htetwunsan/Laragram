@@ -14,7 +14,7 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 window.onbeforeunload = function () {
     window.scrollTo(0, 0);
-}
+};
 
 window.toggleDialog = function ($dialog, showCallback, hideCallback) {
     if (!$dialog.hasClass('dialog-container-active')) {
@@ -45,7 +45,7 @@ if (sessionStorage.getItem('refresh') == 'true') {
 window.goBack = function () {
     sessionStorage.setItem('refresh', 'true');
     window.history.back();
-}
+};
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
@@ -183,14 +183,14 @@ window.timeSince = function (timeStamp) {
         var timeString;
 
         if (secondsPast <= 604800)
-            timeString = formatDate(timeStamp, "dddd") + " at " + formatDate(timeStamp, "h:mm TT") // within a week
+            timeString = formatDate(timeStamp, "dddd") + " at " + formatDate(timeStamp, "h:mm TT"); // within a week
         else if (now.getFullYear() > timeStamp.getFullYear())
-            timeString = formatDate(timeStamp, "MMMM d, yyyy") // a year ago
+            timeString = formatDate(timeStamp, "MMMM d, yyyy"); // a year ago
         else if (now.getMonth() > timeStamp.getMonth())
-            timeString = formatDate(timeStamp, "MMMM d") // months ago
+            timeString = formatDate(timeStamp, "MMMM d"); // months ago
         else
-            timeString = formatDate(timeStamp, "MMMM d") + " at " + formatDate(timeStamp, "h:mm TT") // within a month
+            timeString = formatDate(timeStamp, "MMMM d") + " at " + formatDate(timeStamp, "h:mm TT"); // within a month
 
         return timeString;
     }
-}
+};
